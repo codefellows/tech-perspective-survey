@@ -111,8 +111,8 @@ function handleAndDisplayHistory(request, response) {
     .then(incomingPreviousResults => {
       const allPreviousResults = incomingPreviousResults.rows;
       allPreviousResults.forEach(value => {
-        const numArr = JSON.parse(value.results);
-        arrayOfSurveyObject.push(new Survey(value.survey_instance, numArr));
+        const numArr = JSON.parse(value.results_array);
+        arrayOfSurveyObject.push(new Survey(value.survey_session, value.date_conducted, numArr));
       })
       response.status(200).send(arrayOfSurveyObject);
     })

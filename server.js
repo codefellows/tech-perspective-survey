@@ -37,7 +37,11 @@ app.get('/error', handleError);
 app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
+
 //route functions
+var arrayOfSurveyResults = [];
+// var arrayOfSessions = [];
+
 
 function renderHomePage(request, response) {
   response.render('pages/index');
@@ -82,11 +86,21 @@ function getDataHandler(request, response) {
 
 //may become obsolete by now going back to TypeForm
 function handleChangeSession(request, response) {
-  console.log('request.body: ', request.body);
   const currentSurveySession = request.body.text;
+
   console.log('request.body.text: ', request.body.text);
   arrayOfSurveyObject.push(new Survey(currentSurveySession));
   console.log('SurveyObject: ', arrayOfSurveyObject);
+  //calling constructor with single argument of three parameters may cause problems.
+  //removed this call to the instructor with comment for now.  Was for use with webhooks
+  //and live updating a chart.  Right now we are focusing on single batch data API requests.
+  // So instead we are just assigning a value to currentClassName for use within the API getData call handler.
+  // arrayOfSurveyResults.push(new Survey(currentSurveySession));
+  var currentClassName = currentSurveySession;
+  // arrayOfSessions.push(currentSurveySession);
+  // console.log('request.body: ', request.body);
+  // console.log('request.body.text: ', request.body.text);
+  // console.log('SurveyObject: ', arrayOfSurveyResults);
   response.status(200).render('pages/index');
 }
 
@@ -117,9 +131,9 @@ function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
 
-//may cause problems not passing a second value?
-function Survey(className, resultsArray) {
+function Survey(className, date_conducted, resultsArray) {
   this.surveySession = className;
+  this.date_conducted = date_conducted;
   this.resultsArray = resultsArray || [];
 }
 

@@ -12,6 +12,9 @@ This website and backend provide an easy and streamlined method to conduct a sur
 ## Architecture
 An administrator homepage written with HTML, CSS, and JavaScript is the initiation point for spawning a new instance of the survey.  Through the use of a duplicate and update API with TypeForm, an survey URL for the new group or class is created.  The administrator can then copy the link and send it to participants.  Each participant interacts with the TypeForm front end form and clicks submit.  Data is then gathered by the server.js through TypeForm's APIs.  The results of the survey are then plotted using chartJS (or another charting method) and also recorded into a postgres SQL database.  A list of previous group results can be queried from the database using historical links.
 
+### Database Architecture
+The project contains one database with only one table.  There are three columns.  First, is the PRIMARY SERIAL KEY called id.  Second is the survey_instance.  And the final column is a numerical array stored in JSON format.
+https://docs.google.com/spreadsheets/d/160hlur-MsROEnHNTTyffB1O17a1MmoLAcV1b-apEhJE/edit?usp=sharing
 
 ## Change Log
 **1.0.0** 09-xx-2020 x:xxxm - description
@@ -22,5 +25,8 @@ An administrator homepage written with HTML, CSS, and JavaScript is the initiati
 - Thanks to Lena Eivy for teaching us the skills over the last months to make this possible
 - Thanks to Brian Nations for serving as our PM and tech help during this week.
 - Thanks to the excellent advice, guidance, and explations of our TA's:  Morgan Heinemann, Chance Harmon, Skyler Burger, Bade, Cait... others?
+- [JSON.stringify() at GeeksforGeeks](https://www.geeksforgeeks.org/javascript-convert-an-array-to-json/)
+- [JSON.parse() at W3schools](https://www.w3schools.com/js/js_json_parse.asp)
+- 
 
 

@@ -27,6 +27,9 @@ https://docs.google.com/spreadsheets/d/160hlur-MsROEnHNTTyffB1O17a1MmoLAcV1b-apE
 - Thanks to the excellent advice, guidance, and explations of our TA's:  Morgan Heinemann, Chance Harmon, Skyler Burger, Bade, Cait... others?
 - [JSON.stringify() at GeeksforGeeks](https://www.geeksforgeeks.org/javascript-convert-an-array-to-json/)
 - [JSON.parse() at W3schools](https://www.w3schools.com/js/js_json_parse.asp)
-- 
+- [REPL](https://repl.it/)
+- [MDN Slice for syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice)
+- [Date to ISO Standard at Geeks for Geeks](https://www.geeksforgeeks.org/javascript-date-toisostring-method/#:~:text=toISOString()%20method%20is%20used,created%20using%20date()%20constructor.)
+- [typeof syntax at freeCodeCamp](https://www.freecodecamp.org/news/javascript-data-types-typeof-explained/#:~:text=typeof%20is%20a%20JavaScript%20keyword,a%20variable%20in%20your%20code.)
 
 

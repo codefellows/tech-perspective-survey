@@ -16,6 +16,16 @@ client.on('error', (error) => {
   console.log(error);
 });
 
+var arrayOfSurveyObject = [];
+var todaysSurveyResults = [];
+
+//get todays date for use with the API call
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+today = `${yyyy}-${mm}-${dd}T00:00:00`
+
 //app
 app.use(cors());
 app.set('view engine', 'ejs');
@@ -34,7 +44,6 @@ app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
 //may become obsolete by now going back to TypeForm
-var arrayOfSurveyResults = [];
 
 function renderHomePage(request, response) {
   response.render('pages/index');
@@ -44,12 +53,28 @@ function renderSurvey(request, response) {
 }
 function getDataHandler(request, response) {
   let key = process.env.TYPE_FORM_KEY;
-  const url = 'https://api.typeform.com/forms/hogWCP3L/responses';
-  const header = `Authorization: Bearer ${key}`
+  const longKey = `Bearer ${key}`;
+  //console.log(key);
+  const url = `https://api.typeform.com/forms/hogWCP3L/responses?since=${today}`;
   superagent.get(url)
-    // .set(header)
-    .then(results)
-  console.log(results.body);
+    .set('Authorization', longKey)
+    .then(results => {
+      //response.json(results.text.items)
+      //console.log(JSON.parse(results.text).items);
+      let items = JSON.parse(results.text).items
+      for(let i=0; i<items.length; i++){
+        let total = 0;
+        for(let j=0; j<items[i].answers.length; j++){
+          if(items[i].answers[j].boolean === true){
+            total++;
+          }
+        }
+        console.log(total);
+      }
+    })
+    .catch (err => {
+    console.log('error', err)
+  });
 }
 
 //may become obsolete by now going back to TypeForm
@@ -57,8 +82,8 @@ function handleChangeSession(request, response) {
   console.log('request.body: ', request.body);
   const currentSurveySession = request.body.text;
   console.log('request.body.text: ', request.body.text);
-  arrayOfSurveyResults.push(new Survey(currentSurveySession));
-  console.log('SurveyObject: ', arrayOfSurveyResults);
+  arrayOfSurveyObject.push(new Survey(currentSurveySession));
+  console.log('SurveyObject: ', arrayOfSurveyObject);
   response.status(200).render('pages/index');
 }
 
@@ -68,14 +93,14 @@ function handleAndDisplayHistory(request, response) {
   client.query(sql)
     .then(incomingPreviousResults => {
       const allPreviousResults = incomingPreviousResults.rows;
-      allPreviousResults.forEach( value => {
+      allPreviousResults.forEach(value => {
         const numArr = JSON.parse(value.results);
-        arrayOfSurveyResults.push(new Survey(value.survey_instance,numArr));
+        arrayOfSurveyObject.push(new Survey(value.survey_instance, numArr));
       })
-      response.status(200).send(arrayOfSurveyResults);
+      response.status(200).send(arrayOfSurveyObject);
     })
-    .catch( (error) => {
-      console.log('An eror has occured: ',error);
+    .catch((error) => {
+      console.log('An eror has occured: ', error);
       response.status(500).redirect('pages/error');
     })
 }
@@ -101,7 +126,7 @@ client.connect()
       console.log(`Listening on ${PORT}`);
     });
   })
-  .catch( (error) => {
-    console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.',error);
+  .catch((error) => {
+    console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.', error);
     response.status(500).redirect('pages/error');
   });

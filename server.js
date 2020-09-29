@@ -25,12 +25,41 @@ app.use(methodOverride('_method'));
 
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
+app.post('/defineSession', handleChangeSession);
+app.get('/getdata', getDataHandler)
+app.get('*', handleUndefinedRoute);
+
+//may become obsolete by now going back to TypeForm
+var arrayOfSurveyResults = [];
 
 function renderHomePage(request, response) {
   response.render('pages/index');
 }
 function renderSurvey(request, response) {
   response.render('pages/survey');
+}
+function getDataHandler(request, response){
+  
+}
+
+//may become obsolete by now going back to TypeForm
+function handleChangeSession(request, response) {
+  console.log('request.body: ',request.body);
+  const currentSurveySession = request.body.text;
+  console.log('request.body.text: ',request.body.text);
+  arrayOfSurveyResults.push(new Survey(currentSurveySession));
+  console.log('SurveyObject: ', arrayOfSurveyResults);
+  response.status(200).render('pages/index');
+}
+
+function handleUndefinedRoute(request, response) {
+  response.status(404).send('#404: Page not found.')
+}
+
+//may become obsolete by now going back to TypeForm
+function Survey(className) {
+  this.surveySession = className;
+  this.resultsArray = [];
 }
 
 app.listen(PORT, () => {

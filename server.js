@@ -24,9 +24,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.get('/', renderHomePage);
+app.get('/survey', renderSurvey);
 
 function renderHomePage(request, response) {
   response.render('pages/index');
+}
+function renderSurvey(request, response) {
+  response.render('pages/survey');
 }
 
 app.listen(PORT, () => {

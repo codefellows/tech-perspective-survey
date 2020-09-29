@@ -24,9 +24,34 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.get('/', renderHomePage);
+app.post('/defineSession', handleChangeSession);
+app.get('*', handleUndefinedRoute);
+
+//may become obsolete by now going back to TypeForm
+var arrayOfSurveyResults = [];
 
 function renderHomePage(request, response) {
   response.render('pages/index');
+}
+
+//may become obsolete by now going back to TypeForm
+function handleChangeSession(request, response) {
+  console.log('request.body: ',request.body);
+  const currentSurveySession = request.body.text;
+  console.log('request.body.text: ',request.body.text);
+  arrayOfSurveyResults.push(new Survey(currentSurveySession));
+  console.log('SurveyObject: ', arrayOfSurveyResults);
+  response.status(200).render('pages/index');
+}
+
+function handleUndefinedRoute(request, response) {
+  response.status(404).send('#404: Page not found.')
+}
+
+//may become obsolete by now going back to TypeForm
+function Survey(className) {
+  this.surveySession = className;
+  this.resultsArray = [];
 }
 
 app.listen(PORT, () => {

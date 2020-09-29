@@ -16,6 +16,10 @@ client.on('error', (error) => {
   console.log(error);
 });
 
+var arrayOfSurveyObject = [];
+var todaysSurveyResults = [];
+
+
 //app
 app.use(cors());
 app.set('view engine', 'ejs');
@@ -33,8 +37,11 @@ app.get('/error', handleError);
 app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
-//may become obsolete by now going back to TypeForm
+
+//route functions
 var arrayOfSurveyResults = [];
+// var arrayOfSessions = [];
+
 
 function renderHomePage(request, response) {
   response.render('pages/index');
@@ -42,23 +49,58 @@ function renderHomePage(request, response) {
 function renderSurvey(request, response) {
   response.render('pages/survey');
 }
+
 function getDataHandler(request, response) {
   let key = process.env.TYPE_FORM_KEY;
-  const url = 'https://api.typeform.com/forms/hogWCP3L/responses';
-  const header = `Authorization: Bearer ${key}`
+  const longKey = `Bearer ${key}`;
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0');
+  let yyyy = today.getFullYear();
+  today = `${yyyy}-${mm}-${dd}T00:00:00`
+  //console.log(key);
+  const url = `https://api.typeform.com/forms/hogWCP3L/responses?since=${today}`;
+  //get todays date for use with the API call
   superagent.get(url)
-    // .set(header)
-    .then(results)
-  console.log(results.body);
+  .set('Authorization', longKey)
+  .then(results => {
+    //response.json(results.text.items)
+    //console.log(JSON.parse(results.text).items);
+    let items = JSON.parse(results.text).items
+    for(let i=0; i<items.length; i++){
+      let total = 0;
+        for(let j=0; j<items[i].answers.length; j++){
+          if(items[i].answers[j].boolean === true){
+            total++;
+          }
+        }
+        todaysSurveyResults.push(total);
+        //console.log(total);
+      }
+      arrayOfSurveyObject.push(new Survey(currentClassName, today, todaysSurveyResults));
+    })
+    .catch (err => {
+    console.log('error', err)
+  });
 }
 
 //may become obsolete by now going back to TypeForm
 function handleChangeSession(request, response) {
-  console.log('request.body: ', request.body);
   const currentSurveySession = request.body.text;
+
   console.log('request.body.text: ', request.body.text);
-  arrayOfSurveyResults.push(new Survey(currentSurveySession));
-  console.log('SurveyObject: ', arrayOfSurveyResults);
+  arrayOfSurveyObject.push(new Survey(currentSurveySession));
+  console.log('SurveyObject: ', arrayOfSurveyObject);
+  //calling constructor with single argument of three parameters may cause problems.
+  //removed this call to the instructor with comment for now.  Was for use with webhooks
+  //and live updating a chart.  Right now we are focusing on single batch data API requests.
+  // So instead we are just assigning a value to currentClassName for use within the API getData call handler.
+  // arrayOfSurveyResults.push(new Survey(currentSurveySession));
+  var currentClassName = currentSurveySession;
+  // arrayOfSessions.push(currentSurveySession);
+  // console.log('request.body: ', request.body);
+  // console.log('request.body.text: ', request.body.text);
+  // console.log('SurveyObject: ', arrayOfSurveyResults);
   response.status(200).render('pages/index');
 }
 
@@ -68,14 +110,14 @@ function handleAndDisplayHistory(request, response) {
   client.query(sql)
     .then(incomingPreviousResults => {
       const allPreviousResults = incomingPreviousResults.rows;
-      allPreviousResults.forEach( value => {
-        const numArr = JSON.parse(value.results);
-        arrayOfSurveyResults.push(new Survey(value.survey_instance,numArr));
+      allPreviousResults.forEach(value => {
+        const numArr = JSON.parse(value.results_array);
+        arrayOfSurveyObject.push(new Survey(value.survey_session, value.date_conducted, numArr));
       })
-      response.status(200).send(arrayOfSurveyResults);
+      response.status(200).send(arrayOfSurveyObject);
     })
-    .catch( (error) => {
-      console.log('An eror has occured: ',error);
+    .catch((error) => {
+      console.log('An eror has occured: ', error);
       response.status(500).redirect('pages/error');
     })
 }
@@ -89,10 +131,10 @@ function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
 
-//may cause problems not passing a second value?
-function Survey(className, resultsArray) {
-  this.surveySession = className;
-  this.resultsArray = resultsArray || [];
+function Survey(className, date_conducted, resultsArray) {
+  this.survey_session = className;
+  this.date_conducted = date_conducted;
+  this.results_array = resultsArray || [];
 }
 
 client.connect()
@@ -101,7 +143,7 @@ client.connect()
       console.log(`Listening on ${PORT}`);
     });
   })
-  .catch( (error) => {
-    console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.',error);
+  .catch((error) => {
+    console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.', error);
     response.status(500).redirect('pages/error');
   });

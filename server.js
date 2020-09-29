@@ -23,9 +23,13 @@ app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+//routes
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
+
+app.get('/history', handleAndDisplayHistory);
+app.get('/error', handleError);
 app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
@@ -58,16 +62,46 @@ function handleChangeSession(request, response) {
   response.status(200).render('pages/index');
 }
 
+function handleAndDisplayHistory(request, response) {
+  //get previous data from database
+  const sql = 'SELECT * FROM survey_results';
+  client.query(sql)
+    .then(incomingPreviousResults => {
+      const allPreviousResults = incomingPreviousResults.rows;
+      allPreviousResults.forEach( value => {
+        const numArr = JSON.parse(value.results);
+        arrayOfSurveyResults.push(new Survey(value.survey_instance,numArr));
+      })
+      response.status(200).send(arrayOfSurveyResults);
+    })
+    .catch( (error) => {
+      console.log('An eror has occured: ',error);
+      response.status(500).redirect('pages/error');
+    })
+}
+
+function handleError(request, response) {
+  console.log('An error has occured.');
+  response.render('pages/error');
+}
+
 function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
 
-//may become obsolete by now going back to TypeForm
-function Survey(className) {
+//may cause problems not passing a second value?
+function Survey(className, resultsArray) {
   this.surveySession = className;
-  this.resultsArray = [];
+  this.resultsArray = resultsArray || [];
 }
 
-app.listen(PORT, () => {
-  console.log(`Listening on ${PORT}`);
-});
+client.connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Listening on ${PORT}`);
+    });
+  })
+  .catch( (error) => {
+    console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.',error);
+    response.status(500).redirect('pages/error');
+  });

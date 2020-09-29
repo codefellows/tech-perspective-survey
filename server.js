@@ -19,12 +19,6 @@ client.on('error', (error) => {
 var arrayOfSurveyObject = [];
 var todaysSurveyResults = [];
 
-//get todays date for use with the API call
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
-today = `${yyyy}-${mm}-${dd}T00:00:00`
 
 //app
 app.use(cors());
@@ -43,7 +37,7 @@ app.get('/error', handleError);
 app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
-//may become obsolete by now going back to TypeForm
+//route functions
 
 function renderHomePage(request, response) {
   response.render('pages/index');
@@ -51,26 +45,35 @@ function renderHomePage(request, response) {
 function renderSurvey(request, response) {
   response.render('pages/survey');
 }
+
 function getDataHandler(request, response) {
   let key = process.env.TYPE_FORM_KEY;
   const longKey = `Bearer ${key}`;
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0');
+  let yyyy = today.getFullYear();
+  today = `${yyyy}-${mm}-${dd}T00:00:00`
   //console.log(key);
   const url = `https://api.typeform.com/forms/hogWCP3L/responses?since=${today}`;
+  //get todays date for use with the API call
   superagent.get(url)
-    .set('Authorization', longKey)
-    .then(results => {
-      //response.json(results.text.items)
-      //console.log(JSON.parse(results.text).items);
-      let items = JSON.parse(results.text).items
-      for(let i=0; i<items.length; i++){
-        let total = 0;
+  .set('Authorization', longKey)
+  .then(results => {
+    //response.json(results.text.items)
+    //console.log(JSON.parse(results.text).items);
+    let items = JSON.parse(results.text).items
+    for(let i=0; i<items.length; i++){
+      let total = 0;
         for(let j=0; j<items[i].answers.length; j++){
           if(items[i].answers[j].boolean === true){
             total++;
           }
         }
-        console.log(total);
+        todaysSurveyResults.push(total);
+        //console.log(total);
       }
+      arrayOfSurveyObject.push(new Survey(currentClassName, today, todaysSurveyResults));
     })
     .catch (err => {
     console.log('error', err)

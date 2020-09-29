@@ -132,9 +132,9 @@ function handleUndefinedRoute(request, response) {
 }
 
 function Survey(className, date_conducted, resultsArray) {
-  this.surveySession = className;
+  this.survey_session = className;
   this.date_conducted = date_conducted;
-  this.resultsArray = resultsArray || [];
+  this.results_array = resultsArray || [];
 }
 
 client.connect()

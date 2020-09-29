@@ -38,15 +38,21 @@ function renderHomePage(request, response) {
 function renderSurvey(request, response) {
   response.render('pages/survey');
 }
-function getDataHandler(request, response){
-  
+function getDataHandler(request, response) {
+  let key = process.env.TYPE_FORM_KEY;
+  const url = 'https://api.typeform.com/forms/hogWCP3L/responses';
+  const header = `Authorization: Bearer ${key}`
+  superagent.get(url)
+    // .set(header)
+    .then(results)
+  console.log(results.body);
 }
 
 //may become obsolete by now going back to TypeForm
 function handleChangeSession(request, response) {
-  console.log('request.body: ',request.body);
+  console.log('request.body: ', request.body);
   const currentSurveySession = request.body.text;
-  console.log('request.body.text: ',request.body.text);
+  console.log('request.body.text: ', request.body.text);
   arrayOfSurveyResults.push(new Survey(currentSurveySession));
   console.log('SurveyObject: ', arrayOfSurveyResults);
   response.status(200).render('pages/index');

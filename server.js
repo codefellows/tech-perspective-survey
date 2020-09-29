@@ -31,18 +31,12 @@ app.use(methodOverride('_method'));
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
-
 app.get('/history', handleAndDisplayHistory);
 app.get('/error', handleError);
 app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
-
 //route functions
-var arrayOfSurveyResults = [];
-// var arrayOfSessions = [];
-
-
 function renderHomePage(request, response) {
   response.render('pages/index');
 }
@@ -84,7 +78,7 @@ function getDataHandler(request, response) {
   });
 }
 
-//may become obsolete by now going back to TypeForm
+
 function handleChangeSession(request, response) {
   const currentSurveySession = request.body.text;
 
@@ -131,12 +125,16 @@ function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
 
+
+//constructor function
 function Survey(className, date_conducted, resultsArray) {
   this.survey_session = className;
   this.date_conducted = date_conducted;
   this.results_array = resultsArray || [];
 }
 
+
+//server is on
 client.connect()
   .then(() => {
     app.listen(PORT, () => {

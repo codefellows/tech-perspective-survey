@@ -2,6 +2,8 @@ body{
   background-color: tan;
   margin: 40px;
   border: outset green;
+  height: auto;
+  width: auto;
 }
 
 a{
@@ -24,31 +26,9 @@ div{
 }
 
 
-
-@media only screen and (min-width: 500px) {
+@media only screen and (max-width: 961px){
   main {
-      width: 960px;
-      box-sizing: border-box;
-  }
-
-  section{
-      border: 1px solid white;
-      float: left;
-      padding: 2px;
-      max-width: 31%;
-      min-height: 350px;
-      justify-content: center;
-  }
-
-  img{
-      flex-wrap: auto;
-  }
-
-}
-
-@media only screen and (min-width: 961px){
-  main {
-    width: 1000px;
+    width: 960px;
     box-sizing: border-box;
   }
 
@@ -66,10 +46,29 @@ div{
   }
 }
 
+@media only screen and (max-width: 500px) {
+  main {
+      width: 499px;
+      box-sizing: border-box;
+  }
+
+  section{
+      border: 1px solid white;
+      float: left;
+      padding: 2px;
+      max-width: 31%;
+      min-height: 350px;
+      justify-content: center;
+  }
+
+  img{
+      flex-wrap: auto;
+  }
+ 
+}
 
 
-
-//* {
+/* {
   box-sizing: border-box;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   justify-content: center;

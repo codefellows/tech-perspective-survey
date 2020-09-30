@@ -6,16 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
   <link rel="stylesheet" href="styles/base.css" />
-  
+  <link rel="stylesheet" href="styles/layout.css" />
+  <link rel="stylesheet" href="styles/modules.css" />
   <title>Graph</title>
 </head>
 
-<body>
-  <h1>Survey Results for class <%= key.survey_session %></h1>
-  <div class="container">
-    <canvas id="myChart" width="1200" height="800"></canvas>
-  </div>
-
+<body class="graphbody">
+  <main class="graphbody">
+    <h1>Survey Results for class <%= key.survey_session %></h1>
+    <div class="container">
+      <canvas id="myChart" width="auto" height="auto"></canvas>
+    </div>
+  </main>
 
   <script>
     let myChart = document.getElementById('myChart').getContext('2d');
@@ -82,6 +84,8 @@
       }
     });
   </script>
+
+
 </body>
 
 </html>

@@ -5,4 +5,5 @@ CREATE TABLE survey_results (
   survey_session VARCHAR(255),
   date_conducted VARCHAR(255),
   results_array TEXT
+
 );

@@ -10,9 +10,9 @@ const superagent = require('superagent');
 const pg = require('pg');
 const methodOverride = require('method-override');
 const { render } = require('ejs');
+const { response } = require('express');
 const app = express();
 const dataBaseUrl = process.env.DATABASE_URL;
-console.log(dataBaseUrl);
 const client = new pg.Client(dataBaseUrl);
 client.on('error', (error) => {
   console.log(error);
@@ -48,8 +48,6 @@ function renderSurvey(request, response) {
 
 
 
-
-
 function getDataHandler(request, response) {
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
@@ -63,15 +61,20 @@ function getDataHandler(request, response) {
       }
       value.forEach((num, ind) => {
         acc[ind] += num;
-        //console.log(num);
       })
       return acc;
     }, 0);
     console.log(surveyResults)
-    let countedSurveyResults =  counter(surveyResults);
-    arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, SurveyResults, countedSurveyResults));
-    //console.log(arrayOfSurveyObject)
+    let countedSurveyResults = counter(surveyResults);
+    arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
+    //console.log(countedSurveyResults);
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
+  })
+  .then(()=>{
+    response.status(200).redirect('/graph');
+  })
+  .catch(err => {
+    console.log('error', err)
   });
 }
 
@@ -85,16 +88,33 @@ function todaysDate() {
 }
 
 function counter(array) {
-  let obj = {};
-  for (let i = 0; i < array, length; i++) {
-    if (obj.hasOwnProperty(array[i])) {
-      obj[array[i]] += 1;
-    }
-    else {
-      obj[array[i]] = 1;
-    }
-  }
+  // let countedResults = [];
+  // let obj = {};
+  // for (let i = 0; i < array.length; i++) {
+  //   if (obj.hasOwnProperty(array[i])) {
+  //     obj[array[i]] += 1;
+  //   }
+  //   else {
+  //     obj[array[i]] = 1;
+  //   }
+  //   //console.log(obj);
+  //   //console.log(countedResults)
+  // }
+  // countedResults.push(obj)
+  // return countedResults;
+  let emptyArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let bucketArr = emptyArray.map((value, bucket) => {
+    let count = 0;
+    array.forEach((yesValue) => {
+      if ((yesValue) === bucket) {
+        count++
+      }
+    })
+    return count;
+  })
+  return bucketArr
 }
+
 function apiCall(form) {
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResults = [];
@@ -114,7 +134,6 @@ function apiCall(form) {
         }
         arrayOfResults.push(total);
       }
-      //console.log(arrayOfResults);
       return arrayOfResults;
     })
     .catch(err => {
@@ -148,10 +167,10 @@ function handleAndDisplayHistory(request, response) {
   const sql = 'SELECT * FROM survey_results;';
   client.query(sql)
     .then(incomingPreviousResults => {
-      console.log(incomingPreviousResults);
+      //console.log(incomingPreviousResults);
       const allPreviousResults = incomingPreviousResults.rows;
       allPreviousResults.forEach(value => {
-        console.log('test test', value);
+        //console.log('test test', value);
         let found = false;
         for (var i = 0; i < arrayOfSurveyObject.length; i++) {
           if (arrayOfSurveyObject[i].survey_session === value.survey_session) {
@@ -182,12 +201,14 @@ function renderGraph(request, response) {
   // let safeValue = [currentClassName[0]];
   // console.log(safeValue)
   // client.query(sql, safeValue)
-  const sql = 'SELECT * FROM survey_results WHERE id=1;';
+  const sql = 'SELECT * FROM survey_results;';
   client.query(sql)
     .then(data => {
-      console.log(data);
-      const dataObjectWantToApply = { survey_session: data.rows[0].survey_session, results_array: JSON.parse(data.rows[0].results_array) };
-      console.log(dataObjectWantToApply)
+      //console.log(data);
+      const totalRows = data.rows.length;
+      //console.log('rows total', totalRows);
+      const dataObjectWantToApply = { survey_session: data.rows[totalRows - 1].survey_session, results_array: JSON.parse(data.rows[totalRows - 1].results_array) };
+      //console.log(dataObjectWantToApply)
       response.render('pages/graph', { key: dataObjectWantToApply });
     })
 }
@@ -203,16 +224,17 @@ function handleUndefinedRoute(request, response) {
 
 
 //constructor function
-function Survey(className, date_conducted, resultsArray, counted_results) {
+function Survey(className, date_conducted, resultsArray) {
   this.survey_session = className;
   this.date_conducted = date_conducted;
   this.results_array = resultsArray || [];
-  this.counted_results = counted_results;
 }
 
 function addNewSurveytoDB(obj) {
+  const resultsJson = JSON.stringify(obj.results_array);
   const sql = 'INSERT INTO survey_results (survey_session, date_conducted, results_array) VALUES ($1, $2, $3)';
-  const safeValues = [obj.survey_session, obj.date_conducted, obj.results_array];
+  const safeValues = [obj.survey_session, obj.date_conducted, resultsJson];
+  console.log(safeValues);
   client.query(sql, safeValues)
 }
 //server is on

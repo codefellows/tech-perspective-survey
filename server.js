@@ -12,6 +12,7 @@ const methodOverride = require('method-override');
 const { render } = require('ejs');
 const app = express();
 const dataBaseUrl = process.env.DATABASE_URL;
+console.log(dataBaseUrl);
 const client = new pg.Client(dataBaseUrl);
 client.on('error', (error) => {
   console.log(error);
@@ -45,11 +46,7 @@ function renderSurvey(request, response) {
   response.render('pages/survey');
 }
 
-function renderGraph(request, response) {
-  const dataObjectWantToApply = arrayOfSurveyObject[arrayOfSurveyObject.length - 1];
-  console.log(dataObjectWantToApply)
-  response.render('pages/graph', { key: dataObjectWantToApply });
-}
+
 
 
 
@@ -148,12 +145,13 @@ function handleChangeSession(request, response) {
 
 function handleAndDisplayHistory(request, response) {
   //get previous data from database
-  const sql = 'SELECT * FROM survey_results';
+  const sql = 'SELECT * FROM survey_results;';
   client.query(sql)
     .then(incomingPreviousResults => {
+      console.log(incomingPreviousResults);
       const allPreviousResults = incomingPreviousResults.rows;
       allPreviousResults.forEach(value => {
-        console.log(value.survey_session);
+        console.log('test test', value);
         let found = false;
         for (var i = 0; i < arrayOfSurveyObject.length; i++) {
           if (arrayOfSurveyObject[i].survey_session === value.survey_session) {
@@ -171,6 +169,26 @@ function handleAndDisplayHistory(request, response) {
     .catch((error) => {
       console.log('An eror has occured: ', error);
       response.status(500).redirect('pages/error');
+    })
+}
+
+function renderGraph(request, response) {
+  // Somewhere in request look for id/class name
+
+  // Let team know I need Id in the request.
+  // Will need to incoperate safeValue
+
+  // const sql = 'SELECT * FROM survey_results WHERE survey_session=$1;';
+  // let safeValue = [currentClassName[0]];
+  // console.log(safeValue)
+  // client.query(sql, safeValue)
+  const sql = 'SELECT * FROM survey_results WHERE id=1;';
+  client.query(sql)
+    .then(data => {
+      console.log(data);
+      const dataObjectWantToApply = { survey_session: data.rows[0].survey_session, results_array: JSON.parse(data.rows[0].results_array) };
+      console.log(dataObjectWantToApply)
+      response.render('pages/graph', { key: dataObjectWantToApply });
     })
 }
 

@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Piazzolla', serif;
+  border: red dashed 1px;
+
+}
+
+body{
+  background-color: tan;
+  margin: 40px;
+  border: outset green;
+}
+
+a{
+  text-align:center;
+}
+
+h1{
+  font-size: 1.7em;
+
+}
+
+
+div {
+  border: green dashed 1px;
+}
+
+
+
+#stepNumCol>div {
+  display: flex;
+}
+
+#stepNumCol>div>p {
+  float: right;
+}

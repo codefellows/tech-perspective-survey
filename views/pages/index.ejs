@@ -4,15 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
-    <link rel="stylesheet" href="styles/base.css" />
+    <!-- <link rel="stylesheet" href="styles/base.css" />
     <link rel="stylesheet" href="styles/layout.css" />
-    <link rel="stylesheet" href="styles/modules.css" />
+    <link rel="stylesheet" href="styles/modules.css" /> -->
+    <link rel="stylesheet" href="styles/homepagecheat.css" />
     <link href="https://fonts.googleapis.com/css2?family=Piazzolla:wght@800&display=swap" rel="stylesheet">
     <title>Home Page</title>
   </head>
-  <body>
-    <h1>Home Page</h1>
-    <form method="post" action="/defineSession">
+  <body id="adminPage">
+    <header>
+      <h1>Technology Exposure and Perspective Survey</h1>
+      <h2>Survey Session Administrator Page</h2>
+      <h3>A survey in 4 easy steps...</h3>
+    </header>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="allSteps">
+      <div class="stepNumCol">
+        <div>
+          <p>Step</p>
+          <p>1</p>
+        </div>
+        <div>
+          <p>Step</p>
+          <p>2</p>
+        </div>
+        <div>
+          <p>Step</p>
+          <p>3</p>
+        </div>
+        <div>
+          <p>Step</p>
+          <p>4</p>
+        </div>
+      </div>
+
+      <div class="stepDirectionCol">
+        <div>
+          <p>Copy the link below and share it with all of the partipants. Instruct them to begin the survey.</p>
+          <a href="https://blue-java-perspective-survey.herokuapp.com/survey">https://blue-java-perspective-survey.herokuapp.com/survey</a>
+        </div>
+        <div>
+          Enter the survey session name you would like to use.  Typically, this will be the class number.  For example, "seattle-301d66".
+          <form name="defineSessionNameForm" method="post" action="/defineSession">
+            <input id="text" name="sessionName" type="text" placeholder="seattle-301d66"/>
+          </form>
+        </div>
+      </div>
+      <div>
+        <p>Give people time to complete the survey.  Four to five minutes should be sufficient.</p>
+      </div>
+      <div>
+        Click the below button to fetch the survey results, store them in the database, and render a histogram of this session's results.
+        <form name="getDataForm" method="get" action="/getdata">
+          <button name="getDataButton" type="submit" class="btn btn-primary">
+            Show me the data!
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+
+
+
+    <!-- <form method="post" action="/defineSession">
       <div class="form-group row">
         <label for="text" class="col-4 col-form-label">Text Field</label>
         <div class="col-8">
@@ -26,39 +92,15 @@
           </div>
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-4">Radio Buttons</label>
-        <div class="col-8">
-          <div class="custom-control custom-radio custom-control-inline">
-            <input
-              name="yes"
-              id="yes_0"
-              type="radio"
-              class="custom-control-input"
-              value="yes"
-            />
-            <label for="yes_0" class="custom-control-label">Yes</label>
-          </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input
-              name="yes"
-              id="yes_1"
-              type="radio"
-              class="custom-control-input"
-              value="yes"
-            />
-            <label for="yes_1" class="custom-control-label">Yes</label>
-          </div>
-        </div>
-      </div>
+     
       <div class="form-group row">
         <div class="offset-4 col-8">
           <button name="submit" type="submit" class="btn btn-primary">
-            Submit
+            Show me the data!
           </button>
         </div>
       </div>
-    </form>
-    <a href="/views/pages/survey.ejs">link to survey</a>
+    </form> -->
+    <!-- <a href="/views/pages/survey.ejs">link to survey</a> -->
   </body>
 </html>

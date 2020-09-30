@@ -51,17 +51,22 @@ function getDataHandler(request, response) {
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
   let arrayOfresultsForm3 = apiCall('foB1EGaD');
   let temp = [arrayOfresultsForm1, arrayOfresultsForm2, arrayOfresultsForm3];
-  Promise.all(temp).then(arrs => {
-    let surveyResults = 0;
-    arrs.forEach(value => {
-      surveyResults += value[0]
-    });
-    //console.log(surveyResults)
+  Promise.all(temp).then(array => {
+    let surveyResults = array.reduce((acc, value, index) => {
+      if (acc === 0) {
+        acc = new Array(value.length).fill(0);
+      }
+      value.forEach((num, ind) => {
+        acc[ind] += num;
+        //console.log(num);
+      })
+      return acc;
+    }, 0);
+    console.log(surveyResults)
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, surveyResults));
-    console.log(arrayOfSurveyObject)
+    //console.log(arrayOfSurveyObject)
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
-
-  })
+  });
 }
 
 function todaysDate() {

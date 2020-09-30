@@ -71,7 +71,8 @@ function getDataHandler(request, response) {
       return acc;
     }, 0);
     console.log(surveyResults)
-    arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, surveyResults));
+    let countedSurveyResults =  counter(surveyResults);
+    arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, SurveyResults, countedSurveyResults));
     //console.log(arrayOfSurveyObject)
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   });
@@ -84,6 +85,18 @@ function todaysDate() {
   let yyyy = today.getFullYear();
   today = `${yyyy}-${mm}-${dd}T00:00:00`;
   return today;
+}
+
+function counter(array) {
+  let obj = {};
+  for (let i = 0; i < array, length; i++) {
+    if (obj.hasOwnProperty(array[i])) {
+      obj[array[i]] += 1;
+    }
+    else {
+      obj[array[i]] = 1;
+    }
+  }
 }
 function apiCall(form) {
   let key = process.env.TYPE_FORM_KEY;
@@ -172,10 +185,11 @@ function handleUndefinedRoute(request, response) {
 
 
 //constructor function
-function Survey(className, date_conducted, resultsArray) {
+function Survey(className, date_conducted, resultsArray, counted_results) {
   this.survey_session = className;
   this.date_conducted = date_conducted;
   this.results_array = resultsArray || [];
+  this.counted_results = counted_results;
 }
 
 function addNewSurveytoDB(obj) {

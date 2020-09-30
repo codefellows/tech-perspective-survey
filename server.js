@@ -17,7 +17,7 @@ client.on('error', (error) => {
 });
 
 var arrayOfSurveyObject = [];
-var todaysSurveyResults = [];
+
 
 
 //app
@@ -44,38 +44,57 @@ function renderSurvey(request, response) {
   response.render('pages/survey');
 }
 
+
+
 function getDataHandler(request, response) {
-  let key = process.env.TYPE_FORM_KEY;
-  const longKey = `Bearer ${key}`;
+  let today = todaysDate();
+  let arrayOfresultsForm1 = apiCall('hogWCP3L');
+  let arrayOfresultsForm2 = apiCall('RkNsVV0o');
+  let arrayOfresultsForm3 = apiCall('foB1EGaD');
+  let temp = [arrayOfresultsForm1, arrayOfresultsForm2, arrayOfresultsForm3];
+  Promise.all(temp).then(arrs => {
+    let surveyResults = 0;
+    arrs.forEach(value => {
+      surveyResults += value[0]
+    });
+    console.log(surveyResults)
+    arrayOfSurveyObject.push(new Survey(currentClassName, today, surveyResults));
+  })
+}
+
+function todaysDate() {
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  today = `${yyyy}-${mm}-${dd}T00:00:00`
-  //console.log(key);
-  const url = `https://api.typeform.com/forms/hogWCP3L/responses?since=${today}`;
-  //get todays date for use with the API call
-  superagent.get(url)
-  .set('Authorization', longKey)
-  .then(results => {
-    //response.json(results.text.items)
-    //console.log(JSON.parse(results.text).items);
-    let items = JSON.parse(results.text).items
-    for(let i=0; i<items.length; i++){
-      let total = 0;
-        for(let j=0; j<items[i].answers.length; j++){
-          if(items[i].answers[j].boolean === true){
+  today = `${yyyy}-${mm}-${dd}T00:00:00`;
+  return today;
+}
+function apiCall(form) {
+  let key = process.env.TYPE_FORM_KEY;
+  let arrayOfResults = [];
+  const longKey = `Bearer ${key}`;
+  let today = todaysDate();
+  const url = `https://api.typeform.com/forms/${form}/responses?since=${today}`;
+  return superagent.get(url)
+    .set('Authorization', longKey)
+    .then(results => {
+      let items = JSON.parse(results.text).items
+      for (let i = 0; i < items.length; i++) {
+        let total = 0;
+        for (let j = 0; j < items[i].answers.length; j++) {
+          if (items[i].answers[j].boolean === true) {
             total++;
           }
         }
-        todaysSurveyResults.push(total);
-        //console.log(total);
+        arrayOfResults.push(total);
       }
-      arrayOfSurveyObject.push(new Survey(currentClassName, today, todaysSurveyResults));
+      //console.log(arrayOfResults);
+      return arrayOfResults;
     })
-    .catch (err => {
-    console.log('error', err)
-  });
+    .catch(err => {
+      console.log('error', err)
+    })
 }
 
 

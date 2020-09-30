@@ -9,6 +9,7 @@ const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
 const methodOverride = require('method-override');
+const { render } = require('ejs');
 const app = express();
 const dataBaseUrl = process.env.DATABASE_URL;
 const client = new pg.Client(dataBaseUrl);
@@ -31,6 +32,7 @@ app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
 app.get('/history', handleAndDisplayHistory);
+app.get('/graph', renderGraph);
 app.get('/error', handleError);
 app.get('/getdata', getDataHandler)
 app.get('*', handleUndefinedRoute);
@@ -41,6 +43,12 @@ function renderHomePage(request, response) {
 }
 function renderSurvey(request, response) {
   response.render('pages/survey');
+}
+
+function renderGraph(request, response) {
+  const dataObjectWantToApply = arrayOfSurveyObject[arrayOfSurveyObject.length - 1];
+  console.log(dataObjectWantToApply)
+  response.render('pages/graph', { key: dataObjectWantToApply });
 }
 
 

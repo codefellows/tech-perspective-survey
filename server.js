@@ -18,8 +18,6 @@ client.on('error', (error) => {
 
 var arrayOfSurveyObject = [];
 
-
-
 //app
 app.use(cors());
 app.set('view engine', 'ejs');
@@ -152,7 +150,6 @@ function Survey(className, date_conducted, resultsArray) {
   this.results_array = resultsArray || [];
 }
 
-
 function addNewSurveytoDB(obj) {
   const sql = 'INSERT INTO survey_results (survey_session, date_conducted, results_array) VALUES ($1, $2, $3)';
 
@@ -168,6 +165,7 @@ function addNewSurveytoDB(obj) {
       response.status(500).redirect('pages/error');
     });
 }
+
 //server is on
 
 client.connect()

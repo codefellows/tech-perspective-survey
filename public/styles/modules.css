@@ -1,0 +1,46 @@
+
+
+@media only screen and (max-width: 500px) {
+  .container {
+    width: 400px;
+    height: auto;
+    margin: 5px;
+  }
+  
+  #mychart {
+    width: 400px;
+    height: auto;
+    margin: 5px;
+  }
+
+  .graphbody {
+    max-width: 200px;
+  
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .container {
+    width: 925px;
+    height: auto;
+    margin: 5px;
+  }
+  #mychart {
+    width: 900px;
+    height: auto;
+    margin: 5px;
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  .container {
+    width: auto;
+    height: auto;
+    margin: 5px;
+  }
+  #mychart {
+    width: auto;
+    height: auto;
+    margin: 5px;
+  }
+}

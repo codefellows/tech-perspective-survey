@@ -17,6 +17,7 @@ client.on('error', (error) => {
 });
 
 var arrayOfSurveyObject = [];
+var currentClassName = [];
 
 //app
 app.use(cors());
@@ -55,8 +56,11 @@ function getDataHandler(request, response) {
     arrs.forEach(value => {
       surveyResults += value[0]
     });
-    console.log(surveyResults)
-    arrayOfSurveyObject.push(new Survey(currentClassName, today, surveyResults));
+    //console.log(surveyResults)
+    arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, surveyResults));
+    console.log(arrayOfSurveyObject)
+    addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
+
   })
 }
 
@@ -99,15 +103,16 @@ function apiCall(form) {
 function handleChangeSession(request, response) {
   const currentSurveySession = request.body.text;
 
-  console.log('request.body.text: ', request.body.text);
-  arrayOfSurveyObject.push(new Survey(currentSurveySession));
-  console.log('SurveyObject: ', arrayOfSurveyObject);
+  //console.log('request.body.text: ', request.body.text);
+  // arrayOfSurveyObject.push(new Survey(currentSurveySession));
+  // console.log('SurveyObject: ', arrayOfSurveyObject);
   //calling constructor with single argument of three parameters may cause problems.
   //removed this call to the instructor with comment for now.  Was for use with webhooks
   //and live updating a chart.  Right now we are focusing on single batch data API requests.
   // So instead we are just assigning a value to currentClassName for use within the API getData call handler.
   // arrayOfSurveyResults.push(new Survey(currentSurveySession));
-  var currentClassName = currentSurveySession;
+  currentClassName.push(currentSurveySession);
+  //console.log(currentClassName);
   // arrayOfSessions.push(currentSurveySession);
   // console.log('request.body: ', request.body);
   // console.log('request.body.text: ', request.body.text);
@@ -122,8 +127,18 @@ function handleAndDisplayHistory(request, response) {
     .then(incomingPreviousResults => {
       const allPreviousResults = incomingPreviousResults.rows;
       allPreviousResults.forEach(value => {
-        const numArr = JSON.parse(value.results_array);
-        arrayOfSurveyObject.push(new Survey(value.survey_session, value.date_conducted, numArr));
+        console.log(value.survey_session);
+        let found = false;
+        for (var i = 0; i < arrayOfSurveyObject.length; i++) {
+          if (arrayOfSurveyObject[i].survey_session === value.survey_session) {
+            found = true;
+            break;
+          }
+        }
+        if (found === false) {
+          const numArr = JSON.parse(value.results_array);
+          arrayOfSurveyObject.push(new Survey(value.survey_session, value.date_conducted, numArr));
+        }
       })
       response.status(200).send(arrayOfSurveyObject);
     })
@@ -152,20 +167,9 @@ function Survey(className, date_conducted, resultsArray) {
 
 function addNewSurveytoDB(obj) {
   const sql = 'INSERT INTO survey_results (survey_session, date_conducted, results_array) VALUES ($1, $2, $3)';
-
-  const safeValues = [obj.survery_session, obj.date_conducted, obj.results_array];
+  const safeValues = [obj.survey_session, obj.date_conducted, obj.results_array];
   client.query(sql, safeValues)
-    .then( (results) => {
-      console.log(results);
-      response.status(200).redirect('/')
-    })
-
-    .catch((error) => {
-      console.log('Sorry, something went wrong. We were unable to write to the SQL database.', error);
-      response.status(500).redirect('pages/error');
-    });
 }
-
 //server is on
 
 client.connect()

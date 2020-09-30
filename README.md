@@ -31,5 +31,5 @@ https://docs.google.com/spreadsheets/d/160hlur-MsROEnHNTTyffB1O17a1MmoLAcV1b-apE
 - [MDN Slice for syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice)
 - [Date to ISO Standard at Geeks for Geeks](https://www.geeksforgeeks.org/javascript-date-toisostring-method/#:~:text=toISOString()%20method%20is%20used,created%20using%20date()%20constructor.)
 - [typeof syntax at freeCodeCamp](https://www.freecodecamp.org/news/javascript-data-types-typeof-explained/#:~:text=typeof%20is%20a%20JavaScript%20keyword,a%20variable%20in%20your%20code.)
-
+- [to stop adding duplicates to the history rendered page](https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e)
 

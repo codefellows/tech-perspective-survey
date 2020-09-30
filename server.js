@@ -18,8 +18,6 @@ client.on('error', (error) => {
 
 var arrayOfSurveyObject = [];
 
-
-
 //app
 app.use(cors());
 app.set('view engine', 'ejs');
@@ -151,7 +149,6 @@ function Survey(className, date_conducted, resultsArray) {
   this.date_conducted = date_conducted;
   this.results_array = resultsArray || [];
 }
-
 
 //server is on
 client.connect()

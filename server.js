@@ -131,10 +131,28 @@ function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
 
+// GENERAL FUNCTIONS
+
 function Survey(className, date_conducted, resultsArray) {
   this.survey_session = className;
   this.date_conducted = date_conducted;
   this.results_array = resultsArray || [];
+}
+
+function addNewSurveytoDB(obj) {
+  const sql = 'INSERT INTO survey_results (survey_session, date_conducted, results_array) VALUES ($1, $2, $3)';
+
+  const safeValues = [obj.survery_session, obj.date_conducted, obj.results_array];
+  client.query(sql, safeValues)
+    .then( (results) => {
+      console.log(results);
+      response.status(200).redirect('/')
+    })
+
+    .catch((error) => {
+      console.log('Sorry, something went wrong. We were unable to write to the SQL database.', error);
+      response.status(500).redirect('pages/error');
+    });
 }
 
 client.connect()
@@ -147,3 +165,4 @@ client.connect()
     console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.', error);
     response.status(500).redirect('pages/error');
   });
+

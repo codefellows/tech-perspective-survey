@@ -83,7 +83,11 @@ function todaysDate() {
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  today = `${yyyy}-${mm}-${dd}T00:00:00`;
+  let hour = today.getHours() - 1;
+  console.log(hour);
+  var time = hour + ":" + today.getMinutes()
+  today = `${yyyy}-${mm}-${dd}T${time}:00`;
+  console.log(today)
   return today;
 }
 

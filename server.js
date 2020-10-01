@@ -52,8 +52,8 @@ function getDataHandler(request, response) {
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
-  let arrayOfresultsForm3 = apiCall('foB1EGaD');
-  let temp = [arrayOfresultsForm1, arrayOfresultsForm2, arrayOfresultsForm3];
+  //let arrayOfresultsForm3 = apiCall('foB1EGaD');
+  let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
   Promise.all(temp).then(array => {
     let surveyResults = array.reduce((acc, value, index) => {
       if (acc === 0) {

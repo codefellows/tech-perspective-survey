@@ -22,7 +22,7 @@
         <div id="rowOne" class="stepRow">
           <div class="stepBox">
             <p>Step</p>
-            <p>1</p>
+            <p class="stepNumber">1</p>
           </div>
           <div class="instructionBox">
             <p>Copy the link below and share it with all of the partipants. Instruct them to begin the survey.</p>
@@ -32,7 +32,7 @@
         <div id="rowTwo" class="stepRow">
           <div class="stepBox">
             <p>Step</p>
-            <p>2</p>
+            <p class="stepNumber">2</p>
           </div>
           <div class="instructionBox">
             <p>Enter the survey session name you would like to use.  Typically, this will be the class number.  For example, "seattle-301d66".</p>
@@ -47,7 +47,7 @@
         <div id="rowThree" class="stepRow">
           <div class="stepBox">
             <p>Step</p>
-            <p>3</p>
+            <p class="stepNumber">3</p>
           </div>
           <div class="instructionBox">
             <p>Give people time to complete the survey.  Four to five minutes should be sufficient.</p>
@@ -56,12 +56,12 @@
         <div id="rowFour" class="stepRow">
           <div class="stepBox">
             <p>Step</p>
-            <p>4</p>
+            <p class="stepNumber">4</p>
           </div>
           <div class="instructionBox">
             <p>Click the below button to fetch the survey results, store them in the database, and render a histogram of this session's results.</p>
             <form name="getDataForm" method="get" action="/getdata">
-              <button name="getDataButton" type="submit" class="btn btn-primary">
+              <button id="showDataButton" name="getDataButton" type="submit" class="btn btn-primary">
                 Show me the data!
               </button>
             </form>

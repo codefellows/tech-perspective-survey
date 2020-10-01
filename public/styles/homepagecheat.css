@@ -2,13 +2,14 @@
   box-sizing: border-box;
   font-family: 'Piazzolla', serif;
   border: red dashed 1px;
-
+  
 }
 
 body{
   background-color: tan;
   margin: 40px;
   border: outset green;
+  background-color: rgb(90, 149, 169);
 }
 
 a{
@@ -20,17 +21,41 @@ h1{
 
 }
 
+admin 
 
 div {
   border: green dashed 1px;
 }
 
+.stepBox:nth-child(2) {
+  font-size: 1.2em;
+  color:red;
+}
+
+.stepBox:last-child {
+  font-size: 5em;
+}
+
+.stepRow {
+  display: grid;
+  grid-template-columns: 1fr 9fr;
+  margin: 50px 50px 50px 50px;
+
+}
+
+.instructionBox {
+  border: rgba(0, 0, 0, 0.55) 3px solid;
+  border-radius: 5px;
+  box-shadow: gray 20px;
+  background-color: rgb(38, 165, 63);
+  padding: 30px 30px 30px 30px;
+}
 
 
-#stepNumCol>div {
+/* #stepNumCol>div {
   display: flex;
 }
 
 #stepNumCol>div>p {
   float: right;
-}
+} */

@@ -1,0 +1,14 @@
+body {
+  background-color: rgb(90, 149, 169);
+}
+main {
+  text-align: center;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}

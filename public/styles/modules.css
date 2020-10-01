@@ -9,3 +9,35 @@ footer{
   justify-content: center;
   height: 80px;
 }
+
+#staticBlackHeader {
+  background-color: black;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 75px;
+
+}
+
+#staticBlackHeader>div {
+  width: 30px;
+  height: 75px;
+}
+
+#staticBlackHeader>img {
+  height: 25px;
+  width: 125px;
+  margin: 15px, 15px, 15px, 15px;
+}
+
+#redHeader {
+  background-color:  #D03226;
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#redHeader>h2 {
+  clear: both;
+}

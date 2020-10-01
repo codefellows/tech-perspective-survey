@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/reset.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="styles/modules.css" />
+    <link rel="stylesheet" href="styles/homepagecheat.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Piazzolla:wght@800&display=swap" rel="stylesheet">
+    <title>Technology Survey Historical Results</title>
+  </head>
+  <body id="adminPage">
+    <header>
+      <%- include( '../layout/header.ejs' ) %>
+      <div id="redHeader">
+        <div>
+          <h1>Technology Exposure and Perspective Survey</h1>
+          <h2>Historical Survey Results</h2>
+        </div>
+      </div>
+    </header>
+    <main>
+      <!-- <h3>A survey in 4 easy steps...</h3> -->
+      <div id="allResults">
+        <div class="allResultsRows">
+          <% allResultsArr.forEach( (oneResult, index) => { %>
+          <div class="resultRow">
+            <div class="resultBox">
+              <p>Session</p>
+              <p class="resultNumber"><%= index %></p>
+            </div>
+            <div class="resultSummary">
+              <div class="dataTitle">
+                <h5><%= oneResult.survey_session %></h5>
+              </div>
+              <div class="dataSummary">
+                <p>Date and Time:  <%= oneResult.date_conducted %></p>
+                <p>Number of Participants:  <%= oneResult.results_array.length %></p>
+                <p>Results:  <%= oneResult.results_array %></p>
+              </div>
+              <div id="linkToGraph">
+                <form name = "getThisData" method="get" action="/graph/:survey_session">
+                  <button id="showDataButton" name="getDataButton" type="submit" class="btn btn-primary">
+                    See the histogram!
+                  </button>
+                </form>
+              </div>
+            </div>  
+          </div>
+          <% }) %>
+        </div>
+      </main>
+      <footer>
+        <%- include( 'footer.ejs' ) %>
+      </footer>
+  </body>
+</html>

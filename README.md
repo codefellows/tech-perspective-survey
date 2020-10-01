@@ -39,3 +39,4 @@ https://docs.google.com/spreadsheets/d/160hlur-MsROEnHNTTyffB1O17a1MmoLAcV1b-apE
 - [grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
 - [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
 - [MDN Array.prototype.fill()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+- [Sticky Header](https://www.w3schools.com/howto/howto_js_sticky_header.asp)

@@ -188,7 +188,9 @@ function handleAndDisplayHistory(request, response) {
           arrayOfSurveyObject.push(new Survey(value.survey_session, value.date_conducted, numArr));
         }
       })
-      response.status(200).send(arrayOfSurveyObject);
+
+      response.render('pages/pastresults', { allResultsArr: arrayOfSurveyObject });
+      // response.status(200).send(arrayOfSurveyObject);
     })
     .catch((error) => {
       console.log('An eror has occured: ', error);

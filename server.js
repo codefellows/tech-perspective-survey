@@ -85,11 +85,9 @@ function todaysDate() {
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  let hour = today.getHours() - 1;
-  //console.log(hour);
+  let hour = today.getHours();
   var time = hour + ":" + today.getMinutes()
   today = `${yyyy}-${mm}-${dd}T${time}:00`;
-  //console.log(today)
   return today;
 }
 
@@ -108,11 +106,18 @@ function counter(array) {
 }
 
 function apiCall(form) {
+  let date = new Date();
+  let dd = String(date.getDate()).padStart(2, '0');
+  let mm = String(date.getMonth() + 1).padStart(2, '0');
+  let yyyy = date.getFullYear();
+  let hour = date.getHours() - 1;
+  var time = hour + ":" + date.getMinutes()
+  let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResults = [];
   const longKey = `Bearer ${key}`;
   let today = todaysDate();
-  const url = `https://api.typeform.com/forms/${form}/responses?since=${today}`;
+  const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
   return superagent.get(url)
     .set('Authorization', longKey)
     .then(results => {

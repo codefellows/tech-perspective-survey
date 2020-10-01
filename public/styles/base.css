@@ -1,4 +1,4 @@
-body{
+/* body{
   background-color: tan;
   margin: 40px;
   border: outset green;
@@ -65,20 +65,22 @@ div{
       flex-wrap: auto;
   }
  
-}
+} */
 
 
-/* {
+
+
+* {
   box-sizing: border-box;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   justify-content: center;
   /* text-align: center;
   display: flex; */
-  /* background-color: rgb(90, 149, 169);
-  border: orange dashed 1px; */
-/* } */
+  background-color: rgb(90, 149, 169);
+  border: orange dashed 1px;
+}
 
-/* div {
+div {
   border: red dashed 1px;
 }
 
@@ -99,4 +101,4 @@ p {
   line-height: 1.5em;
 }
 
- */
+

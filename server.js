@@ -19,7 +19,7 @@ client.on('error', (error) => {
 });
 
 var arrayOfSurveyObject = [];
-var currentClassName = [];
+var currentClassName = ['untitled'];
 
 //app
 app.use(cors());
@@ -40,7 +40,7 @@ app.get('*', handleUndefinedRoute);
 
 //route functions
 function renderHomePage(request, response) {
-  response.render('pages/index');
+  response.render('pages/index', {surveyName: currentClassName[(currentClassName.length - 1)]});
 }
 function renderSurvey(request, response) {
   response.render('pages/survey');
@@ -52,8 +52,8 @@ function getDataHandler(request, response) {
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
-  let arrayOfresultsForm3 = apiCall('foB1EGaD');
-  let temp = [arrayOfresultsForm1, arrayOfresultsForm2, arrayOfresultsForm3];
+  //let arrayOfresultsForm3 = apiCall('foB1EGaD');
+  let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
   Promise.all(temp).then(array => {
     let surveyResults = array.reduce((acc, value, index) => {
       if (acc === 0) {
@@ -83,7 +83,11 @@ function todaysDate() {
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  today = `${yyyy}-${mm}-${dd}T00:00:00`;
+  let hour = today.getHours() - 1;
+  console.log(hour);
+  var time = hour + ":" + today.getMinutes()
+  today = `${yyyy}-${mm}-${dd}T${time}:00`;
+  console.log(today)
   return today;
 }
 
@@ -160,7 +164,7 @@ function handleChangeSession(request, response) {
   // console.log('request.body: ', request.body);
   // console.log('request.body.text: ', request.body.text);
   // console.log('SurveyObject: ', arrayOfSurveyResults);
-  response.status(200).render('pages/index');
+  response.status(200).redirect('/');
 }
 
 function handleAndDisplayHistory(request, response) {

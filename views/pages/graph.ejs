@@ -29,7 +29,7 @@
       data: {
         labels: labels,
         datasets: [{
-          label: 'Test Scores',
+          label: '# of people who scored this value',
           data: [<%=key.results_array %>],
           backgroundColor: [
             "rgba(204, 53, 36, 1)",
@@ -110,9 +110,9 @@
     });
   </script>
 
-  <footer>
-    <h3>Created with ChartJS</h3>
-  </footer>
+<footer><h3>Created with ChartJS</h3><%- include( 'footer.ejs' ) %>
+</footer>
+
 </body>
 
 </html>

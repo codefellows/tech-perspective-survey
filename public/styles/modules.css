@@ -47,3 +47,9 @@
 afterSurvey {
   padding: 40px 40px 40px 40px;
 }
+
+footer{
+  background-color: skyblue;
+  justify-content: center;
+  margin: 20px;
+}

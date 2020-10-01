@@ -70,19 +70,25 @@ div{
 
 
 
-* {
+body {
   box-sizing: border-box;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   justify-content: center;
   /* text-align: center;
   display: flex; */
   background-color: rgb(90, 149, 169);
-  border: orange dashed 1px;
+  /* border: orange dashed 1px; */
 }
 
-div {
-  border: red dashed 1px;
+footer{
+  background-color: skyblue;
+  justify-content: center;
+  margin: 10px;
 }
+
+/* div {
+  border: red dashed 1px;
+} */
 
 h1 {
   font-size: 2em;

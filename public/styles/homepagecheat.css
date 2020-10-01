@@ -1,16 +1,32 @@
 * {
   box-sizing: border-box;
   font-family: 'Piazzolla', serif;
-  border: red dashed 1px;
   
 }
 
 h1, h2 {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  font-family: 'Piazzolla', serif;
+}
+
+h2 {
+  font-size: 1.3em;
 }
 
 h3 {
   margin-top: 20px;
+  font-family: 'Piazzolla', serif;
+
+}
+
+p {
+  /* font-family: 'Piazzolla', serif; */
+}
+
+#surveyLinkContainer {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.8em;
 }
 
 body {
@@ -23,7 +39,6 @@ header, #showDataButton {
   /* display: flex;
   justify-content: center; */
   text-align: center;
-  justify-content: center;
 }
 
 header:first-child {
@@ -31,6 +46,10 @@ header:first-child {
   margin-bottom: 20px;
   /* color: red; */
 
+}
+
+.instructionBox>a {
+  padding-top: 80px;
 }
 
 .stepBox {
@@ -61,6 +80,9 @@ header:first-child {
 
 a {
   text-align:center;
+  justify-content: center;
+  padding: 60px 10px 0px 10px;
+
 }
 
 h1 {
@@ -72,11 +94,10 @@ div {
   /* border: green dashed 1px; */
 }
 
-.stepBox:nth-child(2) {
-  font-size: 1.2em;
-  color:red;
-}
 
+.stepBox>p {
+  font-style: italic;
+}
 
 .stepBox:last-child {
   font-size: 5em;
@@ -94,8 +115,35 @@ div {
   border-radius: 5px;
   box-shadow: gray 20px;
   background-color: rgb(184, 218, 221);
-  padding: 30px 30px 30px 30px;
+  padding: 25px 25px 25px 25px;
 }
+
+form {
+  padding: 10px 10px 0px 10px;
+  display: flex;
+  justify-content: center;
+  align-content: space-between;
+}
+
+#gap {
+  width: 20px;
+}
+
+.rowTwo>.instructionBox>form>input {
+  padding-right: 40px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+#rowTwo>.instructionBox>form {
+  padding: 10px 10px 10px 10px;
+}
+
+#currentSession {
+  font-style: italic;
+  font-size: 0.8em;
+  text-align: center;
+}
+
 
 /* #stepNumCol>div {
   display: flex;
@@ -107,4 +155,23 @@ div {
 
 p {
   line-height: 1.3em;
+}
+
+footer>div>p {
+  text-align: center;
+}
+
+footer>div>p {
+  font-size: .7em;
+  color:black;
+  text-decoration: none;
+  margin: none;
+}
+
+/* this is not working */
+footer>div>a {
+  font-size: .7em;
+  color:black;
+  text-decoration: bold;
+  margin: none;
 }

@@ -5,32 +5,78 @@
   
 }
 
-body{
+h1, h2 {
+  margin-bottom: 5px;
+}
+
+h3 {
+  margin-top: 20px;
+}
+
+body {
   background-color: tan;
-  margin: 40px;
-  border: outset green;
+  margin: 40px 40px 10px 40px;
   background-color: rgb(90, 149, 169);
 }
 
-a{
+header, #showDataButton {
+  /* display: flex;
+  justify-content: center; */
+  text-align: center;
+  justify-content: center;
+}
+
+header:first-child {
+  /* clear: both; */
+  margin-bottom: 20px;
+  /* color: red; */
+
+}
+
+.stepBox {
+  display: flex;
+  /* flex-direction: row-reverse; */
+  flex-direction: row-reverse;
+  flex-direction: row;
+
+  justify-content: flex-end;
+  align-items: flex-start;
+  align-content: space-around;
+  /* display: inline-block; */
+  /* color: red;
+  background-color: thistle; */
+  /* border: 2px solid red; */
+  padding-right: 10px;
+}
+
+.stepNumber {
+  font-size: 5em;
+}
+
+.stepBox > p {
+  /* border: 2px dashed orange; */
+  display: inline-block;
+  float: right;
+}
+
+a {
   text-align:center;
 }
 
-h1{
+h1 {
   font-size: 1.7em;
 
 }
 
-admin 
-
 div {
-  border: green dashed 1px;
+  /* border: green dashed 1px; */
 }
 
 .stepBox:nth-child(2) {
   font-size: 1.2em;
   color:red;
 }
+
 
 .stepBox:last-child {
   font-size: 5em;
@@ -39,7 +85,7 @@ div {
 .stepRow {
   display: grid;
   grid-template-columns: 1fr 9fr;
-  margin: 50px 50px 50px 50px;
+  margin: 30px 30px 30px 30px;
 
 }
 
@@ -47,10 +93,9 @@ div {
   border: rgba(0, 0, 0, 0.55) 3px solid;
   border-radius: 5px;
   box-shadow: gray 20px;
-  background-color: rgb(38, 165, 63);
+  background-color: rgb(184, 218, 221);
   padding: 30px 30px 30px 30px;
 }
-
 
 /* #stepNumCol>div {
   display: flex;
@@ -59,3 +104,7 @@ div {
 #stepNumCol>div>p {
   float: right;
 } */
+
+p {
+  line-height: 1.3em;
+}

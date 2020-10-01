@@ -143,7 +143,8 @@ function apiCall(form) {
 
 
 function handleChangeSession(request, response) {
-  const currentSurveySession = request.body.text;
+  console.log(request.body);
+  const currentSurveySession = request.body.sessionName;
 
   //console.log('request.body.text: ', request.body.text);
   // arrayOfSurveyObject.push(new Survey(currentSurveySession));

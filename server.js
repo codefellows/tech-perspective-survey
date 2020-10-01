@@ -49,13 +49,15 @@ function renderSurvey(request, response) {
 
 
 function getDataHandler(request, response) {
+  apiCall('foB1EGaD');
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
-  //let arrayOfresultsForm3 = apiCall('foB1EGaD');
+  // let arrayOfresultsForm3 = apiCall('foB1EGaD');
   let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
   Promise.all(temp).then(array => {
     let surveyResults = array.reduce((acc, value, index) => {
+      console.log(value);
       if (acc === 0) {
         acc = new Array(value.length).fill(0);
       }
@@ -84,28 +86,14 @@ function todaysDate() {
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
   let hour = today.getHours() - 1;
-  console.log(hour);
+  //console.log(hour);
   var time = hour + ":" + today.getMinutes()
   today = `${yyyy}-${mm}-${dd}T${time}:00`;
-  console.log(today)
+  //console.log(today)
   return today;
 }
 
 function counter(array) {
-  // let countedResults = [];
-  // let obj = {};
-  // for (let i = 0; i < array.length; i++) {
-  //   if (obj.hasOwnProperty(array[i])) {
-  //     obj[array[i]] += 1;
-  //   }
-  //   else {
-  //     obj[array[i]] = 1;
-  //   }
-  //   //console.log(obj);
-  //   //console.log(countedResults)
-  // }
-  // countedResults.push(obj)
-  // return countedResults;
   let emptyArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   let bucketArr = emptyArray.map((value, bucket) => {
     let count = 0;
@@ -128,11 +116,12 @@ function apiCall(form) {
   return superagent.get(url)
     .set('Authorization', longKey)
     .then(results => {
+
       let items = JSON.parse(results.text).items
       for (let i = 0; i < items.length; i++) {
         let total = 0;
         for (let j = 0; j < items[i].answers.length; j++) {
-          if (items[i].answers[j].boolean === true) {
+          if (items[i].answers[j].choice.label === 'True') {
             total++;
           }
         }
@@ -149,21 +138,7 @@ function apiCall(form) {
 function handleChangeSession(request, response) {
   console.log(request.body);
   const currentSurveySession = request.body.sessionName;
-
-  //console.log('request.body.text: ', request.body.text);
-  // arrayOfSurveyObject.push(new Survey(currentSurveySession));
-  // console.log('SurveyObject: ', arrayOfSurveyObject);
-  //calling constructor with single argument of three parameters may cause problems.
-  //removed this call to the instructor with comment for now.  Was for use with webhooks
-  //and live updating a chart.  Right now we are focusing on single batch data API requests.
-  // So instead we are just assigning a value to currentClassName for use within the API getData call handler.
-  // arrayOfSurveyResults.push(new Survey(currentSurveySession));
   currentClassName.push(currentSurveySession);
-  //console.log(currentClassName);
-  // arrayOfSessions.push(currentSurveySession);
-  // console.log('request.body: ', request.body);
-  // console.log('request.body.text: ', request.body.text);
-  // console.log('SurveyObject: ', arrayOfSurveyResults);
   response.status(200).redirect('/');
 }
 
@@ -197,23 +172,11 @@ function handleAndDisplayHistory(request, response) {
 }
 
 function renderGraph(request, response) {
-  // Somewhere in request look for id/class name
-
-  // Let team know I need Id in the request.
-  // Will need to incoperate safeValue
-
-  // const sql = 'SELECT * FROM survey_results WHERE survey_session=$1;';
-  // let safeValue = [currentClassName[0]];
-  // console.log(safeValue)
-  // client.query(sql, safeValue)
   const sql = 'SELECT * FROM survey_results;';
   client.query(sql)
     .then(data => {
-      //console.log(data);
       const totalRows = data.rows.length;
-      //console.log('rows total', totalRows);
       const dataObjectWantToApply = { survey_session: data.rows[totalRows - 1].survey_session, results_array: JSON.parse(data.rows[totalRows - 1].results_array) };
-      //console.log(dataObjectWantToApply)
       response.render('pages/graph', { key: dataObjectWantToApply });
     })
 }
@@ -243,7 +206,6 @@ function addNewSurveytoDB(obj) {
   client.query(sql, safeValues)
 }
 //server is on
-
 client.connect()
   .then(() => {
     app.listen(PORT, () => {

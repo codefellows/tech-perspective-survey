@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
-  <link rel ="stylesheet" href="styles/graph.css">
+  <link rel="stylesheet" href="styles/graph.css">
   <!-- <link rel="stylesheet" href="styles/base.css" />
   <link rel="stylesheet" href="styles/layout.css" />
   <link rel="stylesheet" href="styles/modules.css" /> -->
@@ -32,26 +32,27 @@
           label: '# of people who scored this value',
           data: [<%=key.results_array %>],
           backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)"
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
+            "rgba(204, 53, 36, 1)",
           ],
           borderColor: '#777',
           borderWidth: 3,
@@ -62,11 +63,12 @@
       },
       options: {
         title: {
-          display: true,
+          display: false,
           text: 'Data',
           fontSize: 25
         },
         legend: {
+          display: false,
           position: 'right',
           labels: {
             fontColor: '#000'
@@ -75,10 +77,32 @@
         layout: {
           padding: {
             left: 50,
-            right: 0,
+            right: 50,
             bottom: 0,
             top: 0
           }
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: '# of People',
+              fontSize: 20,
+              padding: 20,
+              fontColor: '#000',
+              fontFamily: 'Helvetica'
+            }
+          }],
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: '# of Questions Answered "YES"',
+              fontSize: 20,
+              padding: 20,
+              fontColor: '#000',
+              fontFamily: 'Helvetica'
+            }
+          }]
         },
         maintainAspectRatio: false,
         responsive: true
@@ -88,6 +112,7 @@
 
 <footer><h3>Created with ChartJS</h3><%- include( 'footer.ejs' ) %>
 </footer>
+
 </body>
 
 </html>

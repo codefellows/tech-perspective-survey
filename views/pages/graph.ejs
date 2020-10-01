@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
+  <link rel ="stylesheet" href="styles/graph.css">
+  <!-- <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/layout.css" />
+  <link rel="stylesheet" href="styles/modules.css" /> -->
+  <title>Graph</title>
+</head>
+
+<body class="graphbody">
+  <main class="graphbody">
+    <h1>Survey Results for class <%= key.survey_session %></h1>
+    <div class="container">
+      <canvas id="myChart" width="800px" height="400px" color="white"></canvas>
+    </div>
+  </main>
+
+  <script>
+    let myChart = document.getElementById('myChart').getContext('2d');
+    let labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+
+    let questionaireChart = new Chart(myChart, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Test Scores',
+          data: [<%=key.results_array %>],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)"
+          ],
+          borderColor: '#777',
+          borderWidth: 3,
+          hoverBorderWidth: 3,
+          hoverBorderColor: '#000'
+
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Data',
+          fontSize: 25
+        },
+        legend: {
+          position: 'right',
+          labels: {
+            fontColor: '#000'
+          }
+        },
+        layout: {
+          padding: {
+            left: 50,
+            right: 0,
+            bottom: 0,
+            top: 0
+          }
+        },
+        maintainAspectRatio: false,
+        responsive: true
+      }
+    });
+  </script>
+
+<footer><h3>Created with ChartJS</h3></footer>
+</body>
+
+</html>

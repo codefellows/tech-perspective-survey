@@ -13,7 +13,9 @@ p {
   justify-content: flex-start;
   align-items: center;
   height: 75px;
-
+  position: fixed;
+  width: 100%;
+  margin-top: -75px;
 }
 
 #staticBlackHeader>div {
@@ -33,6 +35,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 75px;
 }
 
 #redHeader>h2 {

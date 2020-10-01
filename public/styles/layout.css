@@ -14,11 +14,11 @@ main {
   margin-bottom: 60px;
 }
 
-footer, #afterSurvey, .surveyWelcome {
+/* footer, #afterSurvey, .surveyWelcome {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
 .surveyWelcome {
   /* width:  */
@@ -28,12 +28,12 @@ footer, #afterSurvey, .surveyWelcome {
   height: 75px;
 }
 
-footer, footer>p {
+/* footer, footer>p {
   height: 50px;
   margin-top: 50px;
   background-color: gray;
-}
+} */
 
-footer>p {
+/* footer>p {
   clear: both;
-}
+} */

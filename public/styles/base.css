@@ -1,88 +1,22 @@
-/* body{
-  background-color: tan;
-  margin: 40px;
-  border: outset green;
-  height: auto;
-  width: auto;
-}
-
-a{
-  text-align:center;
-}
-
-h1{
-  font-size: 1.7em;
-  font-family: 'Piazzolla', serif;
-}
-
-div{
-  background-color: aliceblue;
-  text-align: center;
-  border-style: outset;
-  border: 20px;
-  padding: 100px, 100px, 100px, 100px;
-  height: 250px;
-
-}
-
-
-@media only screen and (max-width: 961px){
-  main {
-    width: 960px;
-    box-sizing: border-box;
-  }
-
-  section{
-    border: 1px solid white;
-    float: left;
-    padding: 2px;
-    max-width: 31%;
-    min-height: 350px;
-    justify-content: center;
-  } 
-
-  img{
-    flex-wrap: auto;
-  }
-}
-
-@media only screen and (max-width: 500px) {
-  main {
-      width: 499px;
-      box-sizing: border-box;
-  }
-
-  section{
-      border: 1px solid white;
-      float: left;
-      padding: 2px;
-      max-width: 31%;
-      min-height: 350px;
-      justify-content: center;
-  }
-
-  img{
-      flex-wrap: auto;
-  }
- 
-} */
-
-
-
-
-* {
+body {
   box-sizing: border-box;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   justify-content: center;
   /* text-align: center;
   display: flex; */
   background-color: rgb(90, 149, 169);
-  border: orange dashed 1px;
+  /* border: orange dashed 1px; */
 }
 
-div {
-  border: red dashed 1px;
+footer{
+  background-color: skyblue;
+  justify-content: center;
+  margin: 10px;
 }
+
+/* div {
+  border: red dashed 1px;
+} */
 
 h1 {
   font-size: 2em;

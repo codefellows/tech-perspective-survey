@@ -1,12 +1,47 @@
 * {
   box-sizing: border-box;
-  font-family: 'Piazzolla', serif;
-  
+  font-family: Gotham Rounded SSm A, Helvetica, sans-serif, serif;
+}
+
+p {
+  font-family: Helvetica, sans-serif, serif;
+}
+
+#staticBlackHeader {
+  background-color: black;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 75px;
+}
+
+#staticBlackHeader>div {
+  width: 30px;
+  height: 75px;
+}
+
+#staticBlackHeader>img {
+  height: 25px;
+  width: 125px;
+  margin: 15px, 15px, 15px, 15px;
+}
+
+#redHeader {
+  background-color:  #D03226;
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#redHeader>h2 {
+  clear: both;
 }
 
 h1, h2 {
   margin-bottom: 10px;
-  font-family: 'Piazzolla', serif;
+  font-family: Helvetica, sans-serif, serif;
+  color: white;
 }
 
 h2 {
@@ -15,8 +50,8 @@ h2 {
 
 h3 {
   margin-top: 20px;
-  font-family: 'Piazzolla', serif;
-
+  font-family: Helvetica, sans-serif, serif;
+  text-align: center;
 }
 
 p {
@@ -31,8 +66,12 @@ p {
 
 body {
   background-color: tan;
-  margin: 40px 40px 10px 40px;
   background-color: rgb(90, 149, 169);
+}
+
+main {
+  margin: 20px 40px 10px 40px;
+  padding-top: 16px;
 }
 
 header, #showDataButton {
@@ -87,7 +126,11 @@ a {
 
 h1 {
   font-size: 1.7em;
+  margin: 15px, 15px, 50px, 15px;
+}
 
+h2 {
+  margin: 50px, 15px, 50px, 15px;
 }
 
 div {

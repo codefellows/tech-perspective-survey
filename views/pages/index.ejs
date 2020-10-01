@@ -26,8 +26,10 @@
           </div>
           <div class="instructionBox">
             <p>Copy the link below and share it with all of the partipants. Instruct them to begin the survey.</p>
-            <a href="https://blue-java-perspective-survey.herokuapp.com/survey">https://blue-java-perspective-survey.herokuapp.com/survey</a>
-          </div>
+            <div id="surveyLinkContainer">
+              <a href="https://blue-java-perspective-survey.herokuapp.com/survey">https://blue-java-perspective-survey.herokuapp.com/survey</a>
+            </div>
+          </div>  
         </div>
         <div id="rowTwo" class="stepRow">
           <div class="stepBox">
@@ -35,13 +37,16 @@
             <p class="stepNumber">2</p>
           </div>
           <div class="instructionBox">
-            <p>Enter the survey session name you would like to use.  Typically, this will be the class number.  For example, "seattle-301d66".</p>
+            <p>Enter the survey session name you would like to use.  Typically, this will be the class number.</p>
             <form name="defineSessionNameForm" method="post" action="/defineSession">
               <input id="text" name="sessionName" type="text" placeholder="seattle-301d66"/>
+              <div id="gap">
+              </div>
               <button name="setNameButton" type="submit" class="btn btn-primary">
                 Set Survey Session Name
               </button>
             </form>
+            <p id="currentSession">Current Survey Session Name:  <%= surveyName %></p>
           </div>
         </div>
         <div id="rowThree" class="stepRow">
@@ -68,5 +73,9 @@
           </div>
         </div>
       </div>
+      <!-- footer formatting needed. feel free to modify and reformat. -->
+      <footer>
+        <%- include( 'footer.ejs' ) %>
+      </footer>
   </body>
 </html>

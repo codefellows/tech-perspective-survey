@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/reset.css" />
-    <link rel="stylesheet" href="styles/base.css" />
-    <link rel="stylesheet" href="styles/layout.css" />
+    <!-- <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/layout.css" /> -->
     <link rel="stylesheet" href="styles/modules.css" />
     <link rel="stylesheet" href="styles/homepagecheat.css" />
     <link href="https://fonts.googleapis.com/css2?family=Piazzolla:wght@800&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
     </header>
     <main>
       <!-- <h3>A survey in 4 easy steps...</h3> -->
-      <div id="allResults">
+      <!-- <div id="allResults"> -->
         <div class="allResultsRows">
           <% allResultsArr.forEach( (oneResult, index) => { %>
           <div class="resultRow">
@@ -51,9 +51,10 @@
           </div>
           <% }) %>
         </div>
-      </main>
-      <footer>
-        <%- include( 'footer.ejs' ) %>
-      </footer>
+      <!-- </div> -->
+    </main>
+    <footer>
+      <%- include( 'footer.ejs' ) %>
+    </footer>
   </body>
 </html>

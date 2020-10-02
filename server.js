@@ -118,6 +118,7 @@ function apiCall(form) {
   const longKey = `Bearer ${key}`;
   let today = todaysDate();
   const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
+  console.log(url);
   return superagent.get(url)
     .set('Authorization', longKey)
     .then(results => {

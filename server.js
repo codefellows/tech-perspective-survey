@@ -46,8 +46,6 @@ function renderSurvey(request, response) {
   response.render('pages/survey');
 }
 
-
-
 function getDataHandler(request, response) {
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
@@ -133,7 +131,6 @@ function apiCall(form) {
     })
 }
 
-
 function handleChangeSession(request, response) {
   const currentSurveySession = request.body.sessionName;
   currentClassName.push(currentSurveySession);
@@ -213,4 +210,3 @@ client.connect()
     console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.', error);
     response.status(500).redirect('pages/error');
   });
-

@@ -106,18 +106,18 @@ function counter(array) {
 }
 
 function apiCall(form) {
-  let date = new Date();
-  let dd = String(date.getDate()).padStart(2, '0');
-  let mm = String(date.getMonth() + 1).padStart(2, '0');
-  let yyyy = date.getFullYear();
-  let hour = date.getHours() - 1;
-  var time = hour + ":" + date.getMinutes()
-  let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
+  // let date = new Date();
+  // let dd = String(date.getDate()).padStart(2, '0');
+  // let mm = String(date.getMonth() + 1).padStart(2, '0');
+  // let yyyy = date.getFullYear();
+  // let hour = date.getHours() - 1;
+  // var time = hour + ":" + date.getMinutes()
+  // let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResults = [];
   const longKey = `Bearer ${key}`;
   let today = todaysDate();
-  const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
+  const url = `https://api.typeform.com/forms/${form}/responses?since=${today}`;
   console.log(url);
   return superagent.get(url)
     .set('Authorization', longKey)

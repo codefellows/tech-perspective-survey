@@ -87,7 +87,7 @@ function todaysDate() {
   let yyyy = today.getFullYear();
   let hour = today.getHours();
   var time = hour + ":" + today.getMinutes()
-  today = `${yyyy}-${mm}-${dd}T${time}:00`;
+  today = `${yyyy}-${mm}-${dd}T00:00:00`;
   return today;
 }
 
@@ -106,13 +106,14 @@ function counter(array) {
 }
 
 function apiCall(form) {
-  // let date = new Date();
-  // let dd = String(date.getDate()).padStart(2, '0');
-  // let mm = String(date.getMonth() + 1).padStart(2, '0');
-  // let yyyy = date.getFullYear();
-  // let hour = date.getHours() - 1;
-  // var time = hour + ":" + date.getMinutes()
-  // let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
+  let date = new Date();
+  let dd = String(date.getDate()).padStart(2, '0');
+  let mm = String(date.getMonth() + 1).padStart(2, '0');
+  let yyyy = date.getFullYear();
+  let hour = date.getHours() - 1;
+  var time = hour + ":" + date.getMinutes()
+  let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
+  console.log(oneHourAgo);
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResults = [];
   const longKey = `Bearer ${key}`;

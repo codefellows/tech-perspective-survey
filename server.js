@@ -49,7 +49,6 @@ function renderSurvey(request, response) {
 
 
 function getDataHandler(request, response) {
-  apiCall('foB1EGaD');
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');

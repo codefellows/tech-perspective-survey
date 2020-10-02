@@ -32,6 +32,7 @@ app.use(methodOverride('_method'));
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
+app.post('/graph/:survey_session', plotHandler );
 app.get('/history', handleAndDisplayHistory);
 app.get('/graph', renderGraph);
 app.get('/error', handleError);
@@ -40,7 +41,7 @@ app.get('*', handleUndefinedRoute);
 
 //route functions
 function renderHomePage(request, response) {
-  response.render('pages/index', {surveyName: currentClassName[(currentClassName.length - 1)]});
+  response.render('pages/index', { surveyName: currentClassName[(currentClassName.length - 1)] });
 }
 function renderSurvey(request, response) {
   response.render('pages/survey');
@@ -65,12 +66,12 @@ function getDataHandler(request, response) {
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
-  .then(()=>{
-    response.status(200).redirect('/graph');
-  })
-  .catch(err => {
-    console.log('error', err)
-  });
+    .then(() => {
+      response.status(200).redirect('/graph');
+    })
+    .catch(err => {
+      console.log('error', err)
+    });
 }
 
 function todaysDate() {
@@ -78,7 +79,7 @@ function todaysDate() {
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  let hour = String(today.getHours()).padStart(2, '0'); 
+  let hour = String(today.getHours()).padStart(2, '0');
   var time = hour + ":" + String(today.getMinutes()).padStart(2, '0');
   today = `${yyyy}-${mm}-${dd}T${time}:00`;
   return today;
@@ -180,6 +181,13 @@ function handleError(request, response) {
   response.render('pages/error');
 }
 
+function plotHandler (request, response){
+  console.log(request.body.survey_session);
+  const dataObjectWantToApply = { survey_session:request.body.survey_session, results_array: request.body.results_array };
+
+  response.render('pages/graph', { key: dataObjectWantToApply});
+}
+
 function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
@@ -199,6 +207,8 @@ function addNewSurveytoDB(obj) {
   console.log(safeValues);
   client.query(sql, safeValues)
 }
+
+
 //server is on
 client.connect()
   .then(() => {

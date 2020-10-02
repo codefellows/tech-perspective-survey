@@ -114,7 +114,6 @@ function apiCall(form) {
   return superagent.get(url)
     .set('Authorization', longKey)
     .then(results => {
-
       let items = JSON.parse(results.text).items
       for (let i = 0; i < items.length; i++) {
         let total = 0;

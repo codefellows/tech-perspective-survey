@@ -55,6 +55,7 @@ function getDataHandler(request, response) {
   // let arrayOfresultsForm3 = apiCall('foB1EGaD');
   let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
   Promise.all(temp).then(array => {
+    console.log('this is morgans cosole log', array);
     let surveyResults = array.reduce((acc, value, index) => {
       console.log(value);
       if (acc === 0) {

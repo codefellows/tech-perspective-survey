@@ -43,7 +43,7 @@
             <p>Results: <%= oneResult.results_array %></p>
           </div>
           <div id="linkToGraph">
-            <form name="getThisData" method="post" action="/graph/<%= oneResult.survey_session %>">
+            <form name="getThisData" method="post" action="/plot/<%= oneResult.survey_session %>">
               <input type="hidden" name="survey_session" value="<%= oneResult.survey_session %>">
               <input type="hidden" name="results_array" value="<%= oneResult.results_array%>">
               <button id="showDataButton" name="getDataButton" type="submit" class="btn btn-primary">

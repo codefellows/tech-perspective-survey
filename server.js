@@ -32,7 +32,7 @@ app.use(methodOverride('_method'));
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
-app.post('/graph/:survey_session', plotHandler );
+app.post('/plot/:survey_session', plotHandler );
 app.get('/history', handleAndDisplayHistory);
 app.get('/graph', renderGraph);
 app.get('/error', handleError);
@@ -182,10 +182,10 @@ function handleError(request, response) {
 }
 
 function plotHandler (request, response){
-  console.log(request.body.survey_session);
+  console.log(request.body);
   const dataObjectWantToApply = { survey_session:request.body.survey_session, results_array: request.body.results_array };
 
-  response.render('pages/graph', { key: dataObjectWantToApply});
+  response.render('pages/plot', { key: dataObjectWantToApply});
 }
 
 function handleUndefinedRoute(request, response) {

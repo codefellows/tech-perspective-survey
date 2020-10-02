@@ -32,6 +32,7 @@ app.use(methodOverride('_method'));
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
+app.post('/plot/:survey_session', plotHandler );
 app.get('/history', handleAndDisplayHistory);
 app.get('/graph', renderGraph);
 app.get('/error', handleError);
@@ -40,24 +41,19 @@ app.get('*', handleUndefinedRoute);
 
 //route functions
 function renderHomePage(request, response) {
-  response.render('pages/index', {surveyName: currentClassName[(currentClassName.length - 1)]});
+  response.render('pages/index', { surveyName: currentClassName[(currentClassName.length - 1)] });
 }
 function renderSurvey(request, response) {
   response.render('pages/survey');
 }
 
-
-
 function getDataHandler(request, response) {
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
-  // let arrayOfresultsForm3 = apiCall('foB1EGaD');
   let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
   Promise.all(temp).then(array => {
-    console.log('this is morgans cosole log', array);
     let surveyResults = array.reduce((acc, value, index) => {
-      console.log(value);
       if (acc === 0) {
         acc = new Array(value.length).fill(0);
       }
@@ -66,18 +62,16 @@ function getDataHandler(request, response) {
       })
       return acc;
     }, 0);
-    console.log(surveyResults)
     let countedSurveyResults = counter(surveyResults);
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
-    //console.log(countedSurveyResults);
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
-  .then(()=>{
-    response.status(200).redirect('/graph');
-  })
-  .catch(err => {
-    console.log('error', err)
-  });
+    .then(() => {
+      response.status(200).redirect('/graph');
+    })
+    .catch(err => {
+      console.log('error', err)
+    });
 }
 
 function todaysDate() {
@@ -85,9 +79,9 @@ function todaysDate() {
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  let hour = today.getHours();
-  var time = hour + ":" + today.getMinutes()
-  today = `${yyyy}-${mm}-${dd}T00:00:00`;
+  let hour = String(today.getHours()).padStart(2, '0');
+  var time = hour + ":" + String(today.getMinutes()).padStart(2, '0');
+  today = `${yyyy}-${mm}-${dd}T${time}:00`;
   return today;
 }
 
@@ -110,20 +104,16 @@ function apiCall(form) {
   let dd = String(date.getDate()).padStart(2, '0');
   let mm = String(date.getMonth() + 1).padStart(2, '0');
   let yyyy = date.getFullYear();
-  let hour = date.getHours() - 1;
-  var time = hour + ":" + date.getMinutes()
+  let hour = String(date.getHours()).padStart(2, '0') - 1;
+  var time = hour + ":" + String(date.getMinutes()).padStart(2, '0');
   let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
-  console.log(oneHourAgo);
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResults = [];
   const longKey = `Bearer ${key}`;
-  let today = todaysDate();
-  const url = `https://api.typeform.com/forms/${form}/responses?since=${today}`;
-  console.log(url);
+  const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
   return superagent.get(url)
     .set('Authorization', longKey)
     .then(results => {
-
       let items = JSON.parse(results.text).items
       for (let i = 0; i < items.length; i++) {
         let total = 0;
@@ -141,9 +131,7 @@ function apiCall(form) {
     })
 }
 
-
 function handleChangeSession(request, response) {
-  console.log(request.body);
   const currentSurveySession = request.body.sessionName;
   currentClassName.push(currentSurveySession);
   response.status(200).redirect('/');
@@ -154,10 +142,8 @@ function handleAndDisplayHistory(request, response) {
   const sql = 'SELECT * FROM survey_results;';
   client.query(sql)
     .then(incomingPreviousResults => {
-      //console.log(incomingPreviousResults);
       const allPreviousResults = incomingPreviousResults.rows;
       allPreviousResults.forEach(value => {
-        //console.log('test test', value);
         let found = false;
         for (var i = 0; i < arrayOfSurveyObject.length; i++) {
           if (arrayOfSurveyObject[i].survey_session === value.survey_session) {
@@ -172,7 +158,6 @@ function handleAndDisplayHistory(request, response) {
       })
 
       response.render('pages/pastresults', { allResultsArr: arrayOfSurveyObject });
-      // response.status(200).send(arrayOfSurveyObject);
     })
     .catch((error) => {
       console.log('An eror has occured: ', error);
@@ -195,6 +180,13 @@ function handleError(request, response) {
   response.render('pages/error');
 }
 
+function plotHandler (request, response){
+  console.log(request.body);
+  const dataObjectWantToApply = { survey_session:request.body.survey_session, results_array: request.body.results_array };
+
+  response.render('pages/plot', { key: dataObjectWantToApply});
+}
+
 function handleUndefinedRoute(request, response) {
   response.status(404).send('#404: Page not found.')
 }
@@ -214,6 +206,8 @@ function addNewSurveytoDB(obj) {
   console.log(safeValues);
   client.query(sql, safeValues)
 }
+
+
 //server is on
 client.connect()
   .then(() => {
@@ -225,4 +219,3 @@ client.connect()
     console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.', error);
     response.status(500).redirect('pages/error');
   });
-

@@ -52,12 +52,9 @@ function getDataHandler(request, response) {
   let today = todaysDate();
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
-  // let arrayOfresultsForm3 = apiCall('foB1EGaD');
   let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
   Promise.all(temp).then(array => {
-    console.log('this is morgans cosole log', array);
     let surveyResults = array.reduce((acc, value, index) => {
-      console.log(value);
       if (acc === 0) {
         acc = new Array(value.length).fill(0);
       }
@@ -66,10 +63,8 @@ function getDataHandler(request, response) {
       })
       return acc;
     }, 0);
-    console.log(surveyResults)
     let countedSurveyResults = counter(surveyResults);
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
-    //console.log(countedSurveyResults);
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
   .then(()=>{
@@ -85,9 +80,9 @@ function todaysDate() {
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
-  let hour = today.getHours();
-  var time = hour + ":" + today.getMinutes()
-  today = `${yyyy}-${mm}-${dd}T00:00:00`;
+  let hour = String(today.getHours()).padStart(2, '0'); 
+  var time = hour + ":" + String(today.getMinutes()).padStart(2, '0');
+  today = `${yyyy}-${mm}-${dd}T${time}:00`;
   return today;
 }
 
@@ -110,16 +105,13 @@ function apiCall(form) {
   let dd = String(date.getDate()).padStart(2, '0');
   let mm = String(date.getMonth() + 1).padStart(2, '0');
   let yyyy = date.getFullYear();
-  let hour = date.getHours() - 1;
-  var time = hour + ":" + date.getMinutes()
+  let hour = String(date.getHours()).padStart(2, '0') - 1;
+  var time = hour + ":" + String(date.getMinutes()).padStart(2, '0');
   let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
-  console.log(oneHourAgo);
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResults = [];
   const longKey = `Bearer ${key}`;
-  let today = todaysDate();
-  const url = `https://api.typeform.com/forms/${form}/responses?since=${today}`;
-  console.log(url);
+  const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
   return superagent.get(url)
     .set('Authorization', longKey)
     .then(results => {
@@ -143,7 +135,6 @@ function apiCall(form) {
 
 
 function handleChangeSession(request, response) {
-  console.log(request.body);
   const currentSurveySession = request.body.sessionName;
   currentClassName.push(currentSurveySession);
   response.status(200).redirect('/');
@@ -154,10 +145,8 @@ function handleAndDisplayHistory(request, response) {
   const sql = 'SELECT * FROM survey_results;';
   client.query(sql)
     .then(incomingPreviousResults => {
-      //console.log(incomingPreviousResults);
       const allPreviousResults = incomingPreviousResults.rows;
       allPreviousResults.forEach(value => {
-        //console.log('test test', value);
         let found = false;
         for (var i = 0; i < arrayOfSurveyObject.length; i++) {
           if (arrayOfSurveyObject[i].survey_session === value.survey_session) {
@@ -172,7 +161,6 @@ function handleAndDisplayHistory(request, response) {
       })
 
       response.render('pages/pastresults', { allResultsArr: arrayOfSurveyObject });
-      // response.status(200).send(arrayOfSurveyObject);
     })
     .catch((error) => {
       console.log('An eror has occured: ', error);

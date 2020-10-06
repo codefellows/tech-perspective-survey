@@ -32,7 +32,7 @@ app.use(methodOverride('_method'));
 app.get('/', renderHomePage);
 app.get('/survey', renderSurvey);
 app.post('/defineSession', handleChangeSession);
-app.post('/plot/:survey_session', plotHandler );
+app.post('/plot/:survey_session', plotHandler);
 app.get('/history', handleAndDisplayHistory);
 app.get('/graph', renderGraph);
 app.get('/error', handleError);
@@ -52,17 +52,18 @@ function getDataHandler(request, response) {
   let arrayOfresultsForm1 = apiCall('hogWCP3L');
   let arrayOfresultsForm2 = apiCall('RkNsVV0o');
   let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
-  Promise.all(temp).then(array => {
-    let surveyResults = array.reduce((acc, value, index) => {
-      if (acc === 0) {
-        acc = new Array(value.length).fill(0);
+  Promise.all(temp).then(arrayComingIn => {
+    let finalArray = [];
+    for (let i = 0; i < arrayComingIn[0].length; i++) {
+      for (let j = 0; j < arrayComingIn[1].length; j++) {
+        if (arrayComingIn[0][i].id === arrayComingIn[1][j].id) {
+          let add = arrayComingIn[0][i].value + arrayComingIn[1][j].value;
+          finalArray.push(add);
+        }
       }
-      value.forEach((num, ind) => {
-        acc[ind] += num;
-      })
-      return acc;
-    }, 0);
-    let countedSurveyResults = counter(surveyResults);
+    }
+    console.log(finalArray);
+    let countedSurveyResults = counter(finalArray);
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
@@ -108,7 +109,7 @@ function apiCall(form) {
   var time = hour + ":" + String(date.getMinutes()).padStart(2, '0');
   let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
   let key = process.env.TYPE_FORM_KEY;
-  let arrayOfResults = [];
+  let arrayOfResultsObjects = [];
   const longKey = `Bearer ${key}`;
   const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
   return superagent.get(url)
@@ -116,15 +117,20 @@ function apiCall(form) {
     .then(results => {
       let items = JSON.parse(results.text).items
       for (let i = 0; i < items.length; i++) {
+
         let total = 0;
         for (let j = 0; j < items[i].answers.length; j++) {
           if (items[i].answers[j].choice.label === 'True') {
             total++;
           }
         }
-        arrayOfResults.push(total);
+        let obj = {};
+        obj['id'] = items[i].metadata.network_id;
+        obj['value'] = total;
+        arrayOfResultsObjects.push(obj);
       }
-      return arrayOfResults;
+      console.log(arrayOfResultsObjects);
+      return arrayOfResultsObjects;
     })
     .catch(err => {
       console.log('error', err)
@@ -180,11 +186,11 @@ function handleError(request, response) {
   response.render('pages/error');
 }
 
-function plotHandler (request, response){
+function plotHandler(request, response) {
   console.log(request.body);
-  const dataObjectWantToApply = { survey_session:request.body.survey_session, results_array: request.body.results_array };
+  const dataObjectWantToApply = { survey_session: request.body.survey_session, results_array: request.body.results_array };
 
-  response.render('pages/plot', { key: dataObjectWantToApply});
+  response.render('pages/plot', { key: dataObjectWantToApply });
 }
 
 function handleUndefinedRoute(request, response) {

@@ -36,7 +36,7 @@ app.post('/plot/:survey_session', plotHandler);
 app.get('/history', handleAndDisplayHistory);
 app.get('/graph', renderGraph);
 app.get('/error', handleError);
-app.get('/getdata', getDataHandler)
+app.get('/data', getDataHandler)
 app.get('*', handleUndefinedRoute);
 
 //route functions
@@ -67,12 +67,12 @@ function getDataHandler(request, response) {
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
-    .then(() => {
-      response.status(200).redirect('/graph');
-    })
-    .catch(err => {
-      console.log('error', err)
-    });
+  .then(() => {
+    response.status(200).redirect('/graph');
+  })
+  .catch(err => {
+    console.log('error', err)
+  });
 }
 
 function todaysDate() {

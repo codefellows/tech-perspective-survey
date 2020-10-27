@@ -14,6 +14,7 @@ const { response } = require('express');
 const app = express();
 const dataBaseUrl = process.env.DATABASE_URL;
 const client = new pg.Client(dataBaseUrl);
+
 client.on('error', (error) => {
   console.log(error);
 });
@@ -43,6 +44,7 @@ app.get('*', handleUndefinedRoute);
 function renderHomePage(request, response) {
   response.render('pages/index', { surveyName: currentClassName[(currentClassName.length - 1)] });
 }
+
 function renderSurvey(request, response) {
   response.render('pages/survey');
 }

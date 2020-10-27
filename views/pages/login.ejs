@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('../../layout/head') %>
+<%- include('../layout/head') %>
 <body>
-  <%- include('../../layout/header') %>
-  <form class="loginForm" action="/loggingIn" method="post">
-    <input class="loginInput" type="text" name="login" placeholder="Enter your JotForm API key" required>
+  <%- include('../layout/header') %>
+  <form class="loginForm" action="/logging-in" method="post">
+    <input class="loginInput" type="text" name="APIkey" placeholder="Enter your JotForm API key" required>
     <button class="loginButton" type="submit">SUBMIT</button>
   </form>
-  <%- include('../../layout/footer') %>
-
-  <%- include('../../layout/navScript') %>
+  <%- include('../layout/footer') %>
 </body>
 </html>

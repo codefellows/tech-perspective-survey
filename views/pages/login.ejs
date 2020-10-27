@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../layout/head') %>
+<body>
+  <%- include('../layout/header') %>
+  <form class="loginForm" action="/logging-in" method="post">
+    <input class="loginInput" type="text" name="APIkey" placeholder="Enter your JotForm API key" required>
+    <button class="loginButton" type="submit">SUBMIT</button>
+  </form>
+  <%- include('../layout/footer') %>
+
+</body>
+</html>

@@ -11,7 +11,7 @@ CREATE TABLE instances(
 DROP TABLE IF EXISTS people;
 
 CREATE TABLE people(
-  questionID SERIAL PRIMARY KEY,
+  peopleID SERIAL PRIMARY KEY,
   instanceID int FOREIGN KEY REFERENCES instances(instanceID),
   true NUMBER
 )

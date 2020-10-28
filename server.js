@@ -39,6 +39,7 @@ app.get('/admin', adminPage);
 app.post('/admin/create', adminCreate);
 app.get('/graph', graphPage);
 app.get('/survey', surveyPage);
+app.delete('/admin', adminDelete);
 
 // -------------- CONSTRUCTORS ------------------
 
@@ -152,6 +153,25 @@ function cloneForm(req, res) {
 
   // reachout to jotform through superagent clone Tahmina's form
   // rerender admin
+}
+
+function adminDelete(req, res) {
+  let key = req.cookies.jotform;
+  //grab ID from database
+  let id;
+  let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${key}`;
+  let SQL = `SELECT adminID FROM admin WHERE apiKey=$1;`;
+  let values = [key];
+
+  return client.query(SQL, values)
+    .then(result => {
+      let SQL = `UPDATE `
+    })
+    .catch(err => console.error(err));
+  // superagent.delete(deleteFormURL)
+  //   .then(result => {
+  //     res.redirect('pages/admin');
+  //   })
 }
 
 client.connect()

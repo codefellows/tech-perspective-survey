@@ -4,7 +4,7 @@
 require('dotenv').config();
 require('ejs');
 const cors = require('cors');
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');

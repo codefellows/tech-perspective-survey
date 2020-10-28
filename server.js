@@ -86,47 +86,98 @@ function loginSession(req, res, key) {
 }
 
 function adminPage(req, res) {
-  let url = `https://api.jotform.com/user/forms`;
-  console.log(`REQ COOKIE JOTFORM: ${req.cookies.jotform}`);
-  superagent.get(url)
-    .set('APIKEY', `${req.cookies.jotform}`)
-    .then(data => {
-      let content = data.body.content;
-      console.log(`FORMS LISTINGS ${JSON.stringify(content)}`);
-      let forms = content.filter(element => {
-        if (element.status === 'ENABLED') {
-          return new FORM(element);
-        }
-      });
-      res.render('pages/admin.ejs', { forms : forms });
+
+  let apiKey = req.cookies.jotform;
+  let userURL = `https://api.jotform.com/user?apiKey=${apiKey}`;
+  let SQL;
+
+  // get the username (and some extra data) associated with this apiKey
+  // superagent.get(userURL)
+  //   .then( results => {
+
+  // let userResults = results.body;
+  // console.log('userResults: ', userResults);
+  // let username = userResults.content.username;
+  // let limit = userResults['limit-left']; // had to put in brackets, because of the - symbol
+
+  let username = 'skrambelled'; // just to bypass using up API calls
+
+  // ok, we have username, now lets get the db adminID correlated with that username
+  SQL = `SELECT adminID FROM admin WHERE username=$1;`;
+  let values = [username];
+
+  return client.query(SQL, values)
+    .then( result => {
+
+      // username is not in the db, render admin page with no forms
+      if(!result.rows.length)
+        res.render('pages/admin', { forms : [] });
+
+      // username is in the db, lets get their forms
+      let adminID = result.rows[0].adminid;
+      SQL = `SELECT * from FORMS WHERE adminID=$1;`;
+      values = [parseInt(adminID)];
+      return client.query(SQL, values)
+        .then( result => {
+          let openForms = result.rows.filter(form => !form.closed);
+          let closedForms = result.rows.filter(form => form.closed);
+
+          res.render('pages/admin', {
+            openForms: openForms,
+            closedForms: closedForms
+          });
+        })
+        .catch(err => console.error(err));
     })
+    .catch(err => console.error(err));
+
+  // }) // end superagent .then
+  // .catch(err => console.error(err));
 }
 
 function adminCreate(req, res) {
-  let key = req.cookies.jotform;
+  let apiKey = req.cookies.jotform;
   let title = req.body.newSurvey;
 
-  let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${key}`;
+  let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${apiKey}`;
 
   superagent.post(cloneURL)
     .then( result => {
 
-      let id = result.body.content.id;
+      let content = result.body.content;
 
-      let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
+      let jotformId = content.id;
+      let username = content.username;
+      let timestamp = Date.now();
+      let totalQuestions = 21; // hard coded hack, because deadlines
+      let totalPeople = 0; // 0 people have taken this survey so far, its just been created
 
-      superagent.put(setTitleURL)
-        .send( { "properties" : { "pagetitle" : title }} )
-        .then( () => {
-          res.redirect('/admin');
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      // We will insert all this data rather than modifying existing data, because each
+      // form we clone is 100% always going to be a brand new form
+      let SQL = 'INSERT INTO forms (adminID, title, ) VALUES ($1, $2, $3, $4, $5, $6, $7);';
+      let values = [username, title, apiKey, jotformId, timestamp, totalPeople, totalQuestions];
+
+      return client.query(SQL, values)
+        .then(() => res.redirect('/admin')) // redirect to the admin page, which will display all this stuff
+        .catch(err => console.error(err));
+
+      // a hacky way to set a pagetitle for a form, since we cannot set a title.
+      // however, lets try this with a db instead (see above)
+
+      // let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
+
+      // superagent.put(setTitleURL)
+      //   .send( { "properties" : { "pagetitle" : title }} )
+      //   .then( () => {
+      //     res.redirect('/admin');
+      //   })
+      //   .catch(err => {
+      //     console.error(err);
+      //   });
 
     })
     .catch(err => {
-      console.error(err)
+      console.error(err);
     });
 
 }
@@ -137,21 +188,6 @@ function graphPage(req, res) {
 
 function surveyPage(req, res) {
   res.render('pages/survey');
-}
-
-function cloneForm(req, res) {
-  // get API key from cookie
-  let key = req.cookies.jotform;
-  let URL = `https://api.jotform.com/form/203010344934040/clone?apiKey=${key}`;
-
-  superagent.post(URL)
-    .then(result => {
-      res.render('pages/admin');
-    })
-    .catch(err => console.error(err));
-
-  // reachout to jotform through superagent clone Tahmina's form
-  // rerender admin
 }
 
 client.connect()

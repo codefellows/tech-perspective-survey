@@ -4,7 +4,7 @@
 require('dotenv').config();
 require('ejs');
 const cors = require('cors');
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
@@ -67,12 +67,12 @@ function getDataHandler(request, response) {
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
-  .then(() => {
-    response.status(200).redirect('/graph');
-  })
-  .catch(err => {
-    console.log('error', err)
-  });
+    .then(() => {
+      response.status(200).redirect('/graph');
+    })
+    .catch(err => {
+      console.log('error', err)
+    });
 }
 
 function todaysDate() {

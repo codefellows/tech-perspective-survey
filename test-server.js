@@ -28,9 +28,16 @@ const DATABASE_URL = process.env.DATABASE_URL;
 const client = new pg.Client(DATABASE_URL);
 app.set('view engine', 'ejs');
 
-// Global variables
 
-let jotFormKey = 0;
+// -------------- ROUTES ------------------
+app.get('/', adminLogin);
+app.get('/login', loginPage);
+app.post('/logging-in', loggingIn);
+app.get('/admin', adminPage);
+app.get('/graph', graphPage);
+app.get('/survey', surveyPage);
+app.post('/admin/create', cloneForm);
+
 
 // -------------- ROUTES ------------------
 // app.get('/', (req, res) => res.redirect('/login'));
@@ -80,6 +87,29 @@ function loginSession(req, res, key) {
 
 function adminPage(req, res) {
   res.render('pages/admin', { key: req.cookies.jotform });
+}
+
+function graphPage(req, res) {
+  res.render('pages/graph');
+}
+
+function surveyPage(req, res) {
+  res.render('pages/survey');
+}
+
+function cloneForm(req, res) {
+  // get API key from cookie
+  let key = req.cookies.jotform;
+  let URL = `https://api.jotform.com/form/203010344934040/clone?apiKey=${key}`;
+
+  superagent.post(URL)
+    .then(result => {
+      res.render('pages/admin');
+    })
+    .catch(err => console.error(err));
+
+  // reachout to jotform through superagent clone Tahmina's form
+  // rerender admin
 }
 
 client.connect()

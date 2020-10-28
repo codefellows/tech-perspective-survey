@@ -4,7 +4,7 @@
 require('dotenv').config();
 require('ejs');
 const cors = require('cors');
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
@@ -69,12 +69,12 @@ function getDataHandler(request, response) {
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
-  .then(() => {
-    response.status(200).redirect('/graph');
-  })
-  .catch(err => {
-    console.log('error', err)
-  });
+    .then(() => {
+      response.status(200).redirect('/graph');
+    })
+    .catch(err => {
+      console.log('error', err)
+    });
 }
 
 function todaysDate() {
@@ -83,7 +83,7 @@ function todaysDate() {
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
   let hour = String(today.getHours()).padStart(2, '0');
-  var time = hour + ":" + String(today.getMinutes()).padStart(2, '0');
+  var time = hour + ':' + String(today.getMinutes()).padStart(2, '0');
   today = `${yyyy}-${mm}-${dd}T${time}:00`;
   return today;
 }
@@ -108,7 +108,7 @@ function apiCall(form) {
   let mm = String(date.getMonth() + 1).padStart(2, '0');
   let yyyy = date.getFullYear();
   let hour = String(date.getHours()).padStart(2, '0') - 1;
-  var time = hour + ":" + String(date.getMinutes()).padStart(2, '0');
+  var time = hour + ':' + String(date.getMinutes()).padStart(2, '0');
   let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResultsObjects = [];

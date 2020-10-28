@@ -3,13 +3,13 @@
 <%- include('../layout/head') %>
 <body>
   <%- include('../layout/header') %>
-
-  <form class="loginForm" action="/login/session" method="post">
-    <input class="loginInput" type="text" name="adminAPIkey" placeholder="Enter your JotForm API key" required>
-    <button class="loginButton" type="submit">SUBMIT</button>
+  <form id="loginForm" action="/logging-in" method="post">
+    <input id="loginInput" type="text" name="APIkey" placeholder="Enter your JotForm API key" required>
+    <button id="loginButton" type="submit">SUBMIT</button>
   </form>
 
   <%- include('../layout/footer') %>
-
+  <!-- include js file to look in local storage for existing api -->
+  <script src="js/login.js"></script>
 </body>
 </html>

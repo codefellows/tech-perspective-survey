@@ -1,15 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
-<%- include('../layout/head') %>
-<body>
-  <%- include('../layout/header') %>
-
-  <p>
-    Your key is: <%= key %>
-  </p>
-
-  <a href="/login">Logout</a>
-
-  <%- include('../layout/footer') %>
-</body>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/reset.css" />
+    <link rel="stylesheet" href="styles/modules.css" />
+    <link rel="stylesheet" href="styles/homepagecheat.css" />
+    <title>Technology Survey Historical Results</title>
+  </head>
+  <body>
+    <header>
+    <%- include( '../layout/header.ejs' ) %>
+    <div id="redHeader">
+      <div>
+        <h1>Technology Exposure and Perspective Survey</h1>
+        <h2>Historical Survey Results</h2>
+      </div>
+    </div>
+  </header>
+  <div class="tableHeader">
+    <h2>Course</h2>
+    <h2>Link</h2>
+    <h2>Submision Count</h2>
+    <h2>Chart</h2>
+  </div>
+  <ul>
+    <% forms.forEach(form =>{
+      <li>
+        
+      </li>
+    <%});%>
+  </ul>
+  </body>
 </html>

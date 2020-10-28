@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS people;
 
 CREATE TABLE people(
   questionID SERIAL PRIMARY KEY,
-  instancesID int FOREIGN KEY REFERENCES instances(instanceID),
+  instanceID int FOREIGN KEY REFERENCES instances(instanceID),
   true NUMBER
 )
 

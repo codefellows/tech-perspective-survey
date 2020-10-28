@@ -24,32 +24,30 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
+const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
 
 const client = new pg.Client(DATABASE_URL);
 app.set('view engine', 'ejs');
 
 
 // -------------- ROUTES ------------------
-app.get('/', adminLogin);
+
 app.get('/login', loginPage);
-app.post('/logging-in', loggingIn);
+app.get('/login/session', loginSessionAuto);
+app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
+app.post('/admin/create', adminCreate);
 app.get('/graph', graphPage);
 app.get('/survey', surveyPage);
-app.post('/admin/create', cloneForm);
 
 // -------------- CONSTRUCTORS ------------------
+
 function FORM(obj) {
   this.id = obj.id;
   this.url = obj.url;
   this.title = obj.title
   this.count = obj.count
 }
-
-// -------------- ROUTES ------------------
-// app.get('/', (req, res) => res.redirect('/login'));
-
-
 
 app.get('/', (req, res) => {
   if(req.cookies && req.cookies.jotform)
@@ -58,11 +56,6 @@ app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
-app.get('/login', loginPage);
-app.get('/login/session', loginSessionAuto);
-app.post('/login/session', loginSessionManual);
-app.get('/admin', adminPage);
-
 function loginPage(req, res) {
   res.clearCookie('jotform');
   res.render('pages/login');
@@ -70,12 +63,12 @@ function loginPage(req, res) {
 
 // called when a user inputs their API key from the /login page, and is redirected to /login/session via POST
 function loginSessionManual(req, res) {
-  loginSession(req, res, req.body.adminAPIkey);
+  loginSession(req, res, req.body.key);
 }
 
 // called when a user navigates to the / homepage, but is redirected to /login/session via GET
 function loginSessionAuto(req, res) {
-  loginSession(req, res, req.cookies.jotform)
+  loginSession(req, res, req.cookies.jotform);
 }
 
 function loginSession(req, res, key) {
@@ -83,7 +76,6 @@ function loginSession(req, res, key) {
 
   superagent.get(URL)
     .then( result => {
-      console.log(JSON.stringify(result));
       res.cookie('jotform', key);
       res.redirect('/admin');
     })
@@ -95,17 +87,51 @@ function loginSession(req, res, key) {
 
 function adminPage(req, res) {
   let url = `https://api.jotform.com/user/forms`;
+  console.log(`REQ COOKIE JOTFORM: ${req.cookies.jotform}`);
   superagent.get(url)
-    .set('APIKEY', `${process.env.JOTFORM_API_KEY}`)
+    .set('APIKEY', `${req.cookies.jotform}`)
     .then(data => {
       let content = data.body.content;
-      let forms = content.map(element => {
+      console.log(`FORMS LISTSINGS ${JSON.stringify(content)}`);
+      let forms = content.filter(element => {
         if (element.status === 'ENABLED') {
           return new FORM(element);
         }
       });
-      res.render('pages/admin.ejs', { forms: forms });
+      res.render('pages/admin.ejs', { forms : forms });
     })
+}
+
+function adminCreate(req, res) {
+  let key = req.cookies.jotform;
+  let title = req.body.newSurvey;
+
+  let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${key}`;
+
+  superagent.post(cloneURL)
+    .then( result => {
+
+      let id = result.body.content.id;
+
+
+      let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
+
+      superagent.put(setTitleURL)
+        .set( 'properties', { 'pagetitle' : `${title}` } )
+        .then(() => {
+          console.log(`SUCCESS setting title to ${title}`);
+        })
+        .catch(err => {
+          console.log(`FAILURE to set title to ${title}`);
+          console.error(err);
+        });
+
+    })
+    .catch(err => {
+      console.log('FAILURE cloning form');
+      console.error(err)
+    });
+
 }
 
 function graphPage(req, res) {

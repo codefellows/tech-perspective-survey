@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 
 const client = new pg.Client(DATABASE_URL);
@@ -38,9 +38,17 @@ app.get('/graph', graphPage);
 app.get('/survey', surveyPage);
 app.post('/admin/create', cloneForm);
 
+// -------------- CONSTRUCTORS ------------------
+function FORM(obj) {
+  this.id = obj.id;
+  this.url = obj.url;
+  this.title = obj.title
+  this.count = obj.count
+}
 
 // -------------- ROUTES ------------------
 // app.get('/', (req, res) => res.redirect('/login'));
+
 
 
 app.get('/', (req, res) => {
@@ -86,7 +94,18 @@ function loginSession(req, res, key) {
 }
 
 function adminPage(req, res) {
-  res.render('pages/admin', { key: req.cookies.jotform });
+  let url = `https://api.jotform.com/user/forms`;
+  superagent.get(url)
+    .set('APIKEY', `${process.env.JOTFORM_API_KEY}`)
+    .then(data => {
+      let content = data.body.content;
+      let forms = content.map(element => {
+        if (element.status === 'ENABLED') {
+          return new FORM(element);
+        }
+      });
+      res.render('pages/admin.ejs', { forms: forms });
+    })
 }
 
 function graphPage(req, res) {
@@ -113,7 +132,7 @@ function cloneForm(req, res) {
 }
 
 client.connect()
-  .then( () => {
+  .then(() => {
     app.listen(PORT, () => {
       console.log(`------- Listening on port : ${PORT} --------`);
     });

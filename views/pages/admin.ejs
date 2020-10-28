@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles/reset.css" />
-    <link rel="stylesheet" href="styles/modules.css" />
-    <link rel="stylesheet" href="styles/homepagecheat.css" />
-    <title>Technology Survey Historical Results</title>
-  </head>
-  <body>
-    <header>
+
+<head>
+  <%- include( '../layout/head.ejs' ) %>
+  <title>Technology Survey Historical Results</title>
+</head>
+
+<body>
+  <header>
     <%- include( '../layout/header.ejs' ) %>
     <div id="redHeader">
       <div>
@@ -18,18 +16,25 @@
       </div>
     </div>
   </header>
-  <div class="tableHeader">
-    <h2>Course</h2>
-    <h2>Link</h2>
-    <h2>Submision Count</h2>
-    <h2>Chart</h2>
-  </div>
-  <ul>
-    <% forms.forEach(form =>{
-      <li>
-        
-      </li>
+  <ul class="tableHeader">
+    <li>
+      <div>
+        <h2>Course</h2>
+        <h2>Link</h2>
+        <h2>Submision Count</h2>
+        <h2>Chart</h2>
+      </div>
+    </li>
+    <% forms.forEach(form =>{ %>
+    <li>
+      <h2><%= form.title %></h2>
+      <a href="<%= form.url%>"><%= form.url%></a>
+      <h2> Submision Count: <%= form.count%></h2>
+      <button type="submit">Close Survey</button>
+    </li>
     <%});%>
   </ul>
-  </body>
+  <%- include('../partials/createsurvey') %>
+</body>
+
 </html>

@@ -19,13 +19,15 @@ client.on('error', (error) => {
 function FORM(obj) {
   this.id = obj.id;
   this.url = obj.url;
+  this.title = obj.title
+  this.count = obj.count
 }
 // routes
 app.get('/admin', renderAdminPage);
 
 function renderAdminPage(req, res) {
   let url = `https://api.jotform.com/user/forms`;
-  app.superagent(url)
+  superagent.get(url)
     .set('APIKEY', `${process.env.JOTFORM_API_KEY}`)
     .then(data => {
       let content = data.body.content;
@@ -37,3 +39,6 @@ function renderAdminPage(req, res) {
       res.render('pages/admin.ejs', { forms: forms });
     })
 }
+app.listen(PORT,()=>{
+  console.log(`::::${PORT}::::`);
+});

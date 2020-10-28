@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 
 const client = new pg.Client(DATABASE_URL);
@@ -37,14 +37,21 @@ app.get('/graph', graphPage);
 app.get('/survey', surveyPage);
 app.post('/admin/create', cloneForm);
 
+// -------------- CONSTRUCTORS ------------------
+function FORM(obj) {
+  this.id = obj.id;
+  this.url = obj.url;
+  this.title = obj.title
+  this.count = obj.count
+}
 
 function adminLogin(req, res) {
   let APIkey = localStorage.getItem('APIkey');
 
-  if(APIkey)
+  if (APIkey)
     res.redirect('/admin/');
   else
-    res.render('/login', {clearAPIkey: false});
+    res.render('/login', { clearAPIkey: false });
 }
 
 function loggingIn(req, res) {
@@ -56,13 +63,13 @@ function loggingIn(req, res) {
   // Verify that this key exists on JOTFORM
   superagent.get(url)
     .then(result => {
-      if(result.body.responseCode === 200) {
+      if (result.body.responseCode === 200) {
         // save this key to localstorage as { APIkey : value }
         // localStorage.setItem('APIkey', 'adminKey');
         // redirect to the admin page, which will then read that local storage key
-        res.render('/admin', {APIkey: adminKey});
+        res.render('/admin', { APIkey: adminKey });
       } else {
-        res.render('/login', {clearAPIkey: true});
+        res.render('/login', { clearAPIkey: true });
         alert('Invalid key');
       }
     })
@@ -81,7 +88,18 @@ function loginPage(req, res) {
 }
 
 function adminPage(req, res) {
-  // res.render
+  let url = `https://api.jotform.com/user/forms`;
+  superagent.get(url)
+    .set('APIKEY', `${process.env.JOTFORM_API_KEY}`)
+    .then(data => {
+      let content = data.body.content;
+      let forms = content.map(element => {
+        if (element.status === 'ENABLED') {
+          return new FORM(element);
+        }
+      });
+      res.render('pages/admin.ejs', { forms: forms });
+    })
 
 }
 
@@ -109,7 +127,7 @@ function cloneForm(req, res) {
 }
 
 client.connect()
-  .then( () => {
+  .then(() => {
     app.listen(PORT, () => {
       console.log(`------- Listening on port : ${PORT} --------`);
     });

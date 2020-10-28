@@ -35,6 +35,7 @@ app.post('/logging-in', loggingIn);
 app.get('/admin', adminPage);
 app.get('/graph', graphPage);
 app.get('/survey', surveyPage);
+app.post('/admin/create', cloneForm);
 
 
 function adminLogin(req, res) {
@@ -89,7 +90,22 @@ function graphPage(req, res) {
 }
 
 function surveyPage(req, res) {
-  res.render('pages/survey')
+  res.render('pages/survey');
+}
+
+function cloneForm(req, res) {
+  // get API key from cookie
+  let key = req.cookies.jotform;
+  let URL = `https://api.jotform.com/form/203010344934040/clone?apiKey=${key}`;
+
+  superagent.post(URL)
+    .then(result => {
+      res.render('pages/admin');
+    })
+    .catch(err => console.error(err));
+
+  // reachout to jotform through superagent clone Tahmina's form
+  // rerender admin
 }
 
 client.connect()

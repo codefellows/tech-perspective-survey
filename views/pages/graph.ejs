@@ -1,42 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
-  <link rel="stylesheet" href="styles/graph.css">
-  <!-- <link rel="stylesheet" href="styles/base.css" />
-  <link rel="stylesheet" href="styles/layout.css" /> -->
-  <!-- <link rel="stylesheet" href="styles/modules.css" /> -->
-  <link rel="stylesheet" href="styles/header.css" />
-
-  <title>Technology Survey Results</title>
-</head>
-
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology Survey Results</title>
+    <link rel="stylesheet" href="styles/reset.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="styles/modules.css" />
+    <link rel="stylesheet" href="styles/header.css" />
+    <title>Results</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  </head>
 <body class="graphbody">
-  <header>
-    <div id="staticBlackHeader">
-      <div></div>
-      <img src="https://images.ctfassets.net/qjy3jg1udcmq/1MN5F84EVi0SaAieSkqY6S/46d632aa1811432f9c0a92600a1a5ee6/cf-logo-horizontal-2-color-white.png">
-    </div>
-    <div id="redHeader">
-      <div>
-        <h1>Technology Exposure and Perspective Survey</h1>
-        <h2>Survey Results</h2>
-      </div>
-    </div>
-  </header>
+  <%- include('../layout/header') %>
   <main class="graphbody">
-    <h1>Survey Results for class <%= key.survey_session %></h1>
     <div class="container">
-      <canvas id="myChart" width="800px" height="400px" color="white"></canvas>
+      <canvas id="myChart" width="800px" height="400px" color="red"></canvas>
     </div>
   </main>
-
   <script>
     let myChart = document.getElementById('myChart').getContext('2d');
     let labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+    let results_array = [3, 6, 9, 2, 8, 2, 8, 2, 7, 12, 5, 8, 3, 8, 4, 6, 3, 8, 12, 15, 2]
 
     let questionaireChart = new Chart(myChart, {
       type: 'bar',
@@ -44,7 +29,7 @@
         labels: labels,
         datasets: [{
           label: '# of people who scored this value',
-          data: [<%=key.results_array %>],
+          data: results_array,
           backgroundColor: [
             "rgba(204, 53, 36, 1)",
             "rgba(204, 53, 36, 1)",
@@ -123,10 +108,7 @@
       }
     });
   </script>
-
-<footer><h3>Created with ChartJS</h3><%- include( 'footer.ejs' ) %>
-</footer>
-
+<%- include('../layout/footer') %>
 </body>
 
 </html>

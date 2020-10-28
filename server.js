@@ -14,6 +14,7 @@ const { response } = require('express');
 const app = express();
 const dataBaseUrl = process.env.DATABASE_URL;
 const client = new pg.Client(dataBaseUrl);
+
 client.on('error', (error) => {
   console.log(error);
 });
@@ -43,6 +44,7 @@ app.get('*', handleUndefinedRoute);
 function renderHomePage(request, response) {
   response.render('pages/index', { surveyName: currentClassName[(currentClassName.length - 1)] });
 }
+
 function renderSurvey(request, response) {
   response.render('pages/survey');
 }
@@ -67,12 +69,12 @@ function getDataHandler(request, response) {
     arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
     addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
   })
-  .then(() => {
-    response.status(200).redirect('/graph');
-  })
-  .catch(err => {
-    console.log('error', err)
-  });
+    .then(() => {
+      response.status(200).redirect('/graph');
+    })
+    .catch(err => {
+      console.log('error', err)
+    });
 }
 
 function todaysDate() {
@@ -81,7 +83,7 @@ function todaysDate() {
   let mm = String(today.getMonth() + 1).padStart(2, '0');
   let yyyy = today.getFullYear();
   let hour = String(today.getHours()).padStart(2, '0');
-  var time = hour + ":" + String(today.getMinutes()).padStart(2, '0');
+  var time = hour + ':' + String(today.getMinutes()).padStart(2, '0');
   today = `${yyyy}-${mm}-${dd}T${time}:00`;
   return today;
 }
@@ -106,7 +108,7 @@ function apiCall(form) {
   let mm = String(date.getMonth() + 1).padStart(2, '0');
   let yyyy = date.getFullYear();
   let hour = String(date.getHours()).padStart(2, '0') - 1;
-  var time = hour + ":" + String(date.getMinutes()).padStart(2, '0');
+  var time = hour + ':' + String(date.getMinutes()).padStart(2, '0');
   let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
   let key = process.env.TYPE_FORM_KEY;
   let arrayOfResultsObjects = [];

@@ -1,12 +1,14 @@
 <ul class="tableHeader">
-  <li>
-    <div>
-      <h2>Course</h2>
-      <h2>Link</h2>
-      <h2>Submision Count</h2>
-      <h2>Chart</h2>
-    </div>
-  </li>
+  <% if(forms.length) { %>
+    <li>
+      <div>
+        <h2>Course</h2>
+        <h2>Link</h2>
+        <h2>Submision Count</h2>
+        <h2>Chart</h2>
+      </div>
+    </li>
+  <% } %>
   <% forms.forEach( form => { %>
   <li>
     <h2><%= form.title %></h2>

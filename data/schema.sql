@@ -1,18 +1,28 @@
-DROP TABLE IF EXISTS instances;
+DROP TABLE IF EXISTS forms;
 
-CREATE TABLE instances(
+CREATE TABLE forms(
   instanceID SERIAL PRIMARY KEY,
-  instanceDescription VARCHAR(30),
-  totalPeople NUMBER,
-  timestamp NUMBER,
-  totalNumberOfQuestion NUMBER
-)
+  adminID NUMERIC,
+  title VARCHAR(255),
+  jotformId NUMERIC,
+  timestamp NUMERIC,
+  totalPeople NUMERIC,
+  totalQuestions NUMERIC,
+  closed BOOLEAN
+);
 
 DROP TABLE IF EXISTS people;
 
 CREATE TABLE people(
   peopleID SERIAL PRIMARY KEY,
-  instanceID int FOREIGN KEY REFERENCES instances(instanceID),
-  true NUMBER
-)
+  instanceID NUMERIC,
+  numTrue NUMERIC
+);
 
+DROP TABLE IF EXISTS admin;
+
+CREATE TABLE admin(
+  adminID SERIAL PRIMARY KEY,
+  username VARCHAR(255),
+  apiKey VARCHAR(255)
+);

@@ -1,20 +1,17 @@
-<ul class="tableHeader">
-  <% if(forms.length) { %>
-    <li>
-      <div>
-        <h2>Course</h2>
-        <h2>Link</h2>
-        <h2>Submision Count</h2>
-        <h2>Chart</h2>
-      </div>
-    </li>
-  <% } %>
+<% if(forms.length) { %>
+<ul>
   <% forms.forEach( form => { %>
   <li>
-    <h2><%= form.title %></h2>
-    <a href="<%= form.url %>"><%= form.url %></a>
+    <h2><%= form.created_at %></h2>
+    <!-- <a href="/survey/<%= form.id %>">/survey/<%= form.id %></a> -->
     <h2> Submision Count: <%= form.count %></h2>
-    <button type="submit">Close Survey</button>
+    <form method="get" action="/result/<%= form.id %>">
+      <button type="submit">Results</button>
+    </form>
+    <from action="/result" method="post">
+      <button type="submit">Save Result</button>
+    </from>
   </li>
   <% }); %>
 </ul>
+<% } %>

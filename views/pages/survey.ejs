@@ -7,31 +7,25 @@
 </head>
 
 <body>
-  <header>
-    <%- include( '../layout/header' ) %>
-    <div id="redHeader">
-        <h1>Technology Exposure and Perspective Survey</h1>
-        <h2>Survey Forms</h2>
-    </div>
-  </header>
+  <%- include( '../layout/header' ) %>
+  <div id="redHeader">
+      <h1>Technology Exposure and Perspective Survey</h1>
+      <h2>Survey Forms</h2>
+  </div>
 
   <main>
     <div id="mainSurveyArea">
       <div>
         <h2 class="surveyWelcome">Thank you for taking the time to complete this survey and discuss everyone's various
           access levels to technology.</h2>
-        <p class="surveyWelcome">Please conduct survey below, the survey is split into two blocks, please click submit
-          after completing each block.</p>
       </div>
       <div id="surveybody">
-        <iframe src="https://form.jotform.com/203010344934040" style="width: 100%; height: 500px;" title= "Survey Results"></iframe>
+        <iframe src="https://form.jotform.com/<%= id %>" style="width: 100%; height: 500px;" title= "Survey"></iframe>
       </div>
     </div>
   </main>
 
-  <footer>
-    <%- include('../layout/footer') %>
-  </footer>
+  <%- include('../layout/footer') %>
 </body>
 
 </html>

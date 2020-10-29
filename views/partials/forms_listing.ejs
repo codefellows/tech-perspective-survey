@@ -4,7 +4,7 @@
   <li>
     <h2><%= form.created_at %></h2>
     <a href="/survey/<%= form.id %>">/survey/<%= form.id %></a>
-    <h2> Submision Count: <%= form.count %></h2>
+    <h2> Submisions: <%= form.count %></h2>
     <form method="get" action="/result/<%= form.id %>">
       <button type="submit">Results</button>
     </form>

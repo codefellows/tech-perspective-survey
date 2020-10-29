@@ -1,12 +1,7 @@
 footer {
-  position: sticky;
-  bottom: 0;
+  width: 100vw;
   height: 5vw;
   background-color: black;
-}
-
-footer .navlinks{
-  width: 98%;
 }
 
 footer p {

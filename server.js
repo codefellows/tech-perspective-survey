@@ -22,6 +22,7 @@ app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 
 const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -38,7 +39,9 @@ app.get('/login/session', loginSessionAuto);
 app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
 
+
 app.get('/result/:id', showResult);
+
 
 // -------------- CONSTRUCTORS ------------------
 
@@ -108,7 +111,36 @@ function adminPage(req, res) {
 function showResult(req, res) {
   let id = req.params.id;
   let key = req.cookies.jotform;
+
   let URL = `https://api.jotform.com/form/${id}/submissions?apiKey=${key}`;
+
+  let title = req.body.newSurvey;
+
+//   let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${key}`;
+
+//   superagent.post(cloneURL)
+//     .then( result => {
+
+//       let id = result.body.content.id;
+
+//       let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
+
+//       superagent.put(setTitleURL)
+//         .send( { 'properties' : { 'pagetitle' : title }} )
+//         .then( () => {
+//           res.redirect('/admin');
+//         })
+//         .catch(err => {
+//           console.error(err);
+//         });
+
+//     })
+//     .catch(err => {
+//       console.error(err)
+//     });
+
+// }
+
 
   superagent.get(URL)
     .then(result => {
@@ -137,11 +169,18 @@ function showResult(req, res) {
         else
           surveyResults[people[i]]++;
 
+
       res.render('pages/graph', { surveyResults : surveyResults });
-    })
+
+//   superagent.post(URL)
+//     .then(() => {
+//       res.render('pages/admin');
+
+//     })
     .catch(err => console.error(err));
 }
 
+          
 app.listen(PORT, () => {
   console.log(`------- Listening on port : ${PORT} --------`);
 });
@@ -154,3 +193,6 @@ app.listen(PORT, () => {
 //     });
 //   })
 //   .catch(err => console.error(err));
+
+
+

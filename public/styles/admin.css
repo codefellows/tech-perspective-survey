@@ -1,0 +1,11 @@
+footer p {
+  background-color: black;
+  width: 100%;
+  height: 15vh;
+}
+
+.adminPage {
+  height: 50vh;
+  width: 50vh;
+  background-color: blue;
+}

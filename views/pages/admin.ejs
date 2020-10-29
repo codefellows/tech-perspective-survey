@@ -7,11 +7,15 @@
 </head>
 
 <body>
-  <%- include( '../layout/header.ejs' ) %>
-  <%- include( '../partials/limit.ejs'), { limit : limit } %>
-  <%- include( '../partials/forms_listing', { forms : forms } ) %>
-  <%- include( '../partials/createsurvey' ) %>
-  <%- include( '../layout/footer.ejs' ) %>
+  <div class="adminPage">
+    <%- include( '../layout/header.ejs' ) %>
+    <%- include( '../partials/limit.ejs'), { limit : limit } %>
+    <%- include( '../partials/forms_listing', { forms : forms } ) %>
+    <%- include( '../partials/createsurvey' ) %>
+  </div>
+  <footer>
+    <p>Created by Team Will Ring Your Bell for Codefellows</p>
+  </footer>
 </body>
 
 </html>

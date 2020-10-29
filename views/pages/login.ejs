@@ -4,15 +4,17 @@
 <head>
   <title>Diversity in Technology</title>
   <%- include( '../layout/head' ) %>
+  <link rel="stylesheet" href="styles/login.css" />
 </head>
 
 <body>
   <%- include( '../layout/header' ) %>
-  <form id="loginForm" action="/login/session" method="post">
-    <input id="loginInput" type="text" name="key" placeholder="Enter your Full Access JotForm API key" required>
-    <button id="loginButton" type="submit">SUBMIT</button>
-  </form>
-  <%- include('../layout/footer') %>
+  <div class="login">
+    <form class="loginForm" action="/login/session" method="post">
+      <input id="loginInput" type="text" name="key" placeholder="Enter API key" required>
+      <button id="loginButton" type="submit">SUBMIT</button>
+    </form>
+  </div>
 </body>
 
 </html>

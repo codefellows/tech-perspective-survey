@@ -29,8 +29,8 @@ p {
   margin: 15px, 15px, 15px, 15px;
 }
 
-#redHeader {
-  background-color:  #D03226;
+#pinkHeader {
+  background-color: #EBB3BB;
   height: 110px;
   display: flex;
   justify-content: center;
@@ -38,7 +38,7 @@ p {
   margin-top: 75px;
 }
 
-#redHeader>h2 {
+#pinkHeader>h2 {
   clear: both;
 }
 

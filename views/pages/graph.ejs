@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Technology Survey Results</title>
-    <%- include( '../layout/head' ) %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-  </head>
+
+<head>
+  <title>Technology Survey Results</title>
+  <%- include( '../layout/head' ) %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+
 <body class="graphbody">
   <%- include( '../layout/header' ) %>
   <main class="graphbody">
@@ -12,8 +14,8 @@
       <canvas id="myChart" width="800px" height="400px" color="red"></canvas>
     </div>
   </main>
-
 <%- include( '../partials/renderGraph', { surveyResults, surveyResults } ) %>
-
 <%- include( '../layout/footer' ) %>
 </body>
+
+</html>

@@ -1,6 +1,9 @@
-.navlinks {
+.navlinks{
   background-color: black;
   width: 100%;
   height: 15vh;
-  
+}
+
+p {
+  color: #f7af3c;
 }

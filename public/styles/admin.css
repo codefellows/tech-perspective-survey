@@ -4,8 +4,35 @@ footer p {
   height: 15vh;
 }
 
-.adminPage {
-  height: 50vh;
-  width: 50vh;
-  background-color: blue;
+#surveyForms li {
+  height: 12vh;
+  border-radius: 5px;
+  width: 80%;
+  background-color: #1D254F;
+  margin-bottom: 5vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
+
+#apiLimit {
+  text-align: center;
+  color: #1c3128;
+  font-size: 3ch;
+  margin-top: 10vh;
+  margin-bottom: 5vh;
+}
+
+.suveyForms {
+  color: #1c3128;
+}
+
+/* 
+.adminPage {
+  width: 70vh;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  background-color: #1D254F;
+  
+} */

@@ -11,10 +11,12 @@
   <% } %>
   <% forms.forEach( form => { %>
   <li>
-    <h2><%= form.title %></h2>
+    <h2><%= form.created_at %></h2>
     <a href="<%= form.url %>"><%= form.url %></a>
     <h2> Submision Count: <%= form.count %></h2>
-    <form id="formSubmit" action="/admin/<%= form.id %>?_method=DELETE"  method="post">
+
+    <form action="/result/<%= form.id %>">
+
       <button type="submit">Close Survey</button>
     </form>
   </li>

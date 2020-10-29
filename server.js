@@ -12,6 +12,7 @@ const pg = require('pg');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { query } = require('express');
 
 
 // ------------- CONFIG -------------------
@@ -37,18 +38,18 @@ app.get('/login', loginPage);
 app.get('/login/session', loginSessionAuto);
 app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
-app.post('/admin/create', adminCreate);
-app.get('/graph', graphPage);
-app.get('/survey', surveyPage);
-app.delete('/admin/:id', adminDelete);
+
+
+app.get('/result/:id', showResult);
+
 
 // -------------- CONSTRUCTORS ------------------
 
-function FORM(obj) {
+function Form(obj) {
   this.id = obj.id;
   this.url = obj.url;
-  this.title = obj.title
-  this.count = obj.count
+  this.created_at= obj.created_at;
+  this.count = obj.count;
 }
 
 app.get('/', (req, res) => {
@@ -73,116 +74,125 @@ function loginSessionAuto(req, res) {
   loginSession(req, res, req.cookies.jotform);
 }
 
+// called from either the automatic or the manual login
 function loginSession(req, res, key) {
   let URL = `https://api.jotform.com/user?apiKey=${key}`;
 
   superagent.get(URL)
-    .then( result => {
+    .then( () => {
       res.cookie('jotform', key);
       res.redirect('/admin');
     })
-    .catch(err => {
+    .catch( () => {
       res.clearCookie('jotform');
       res.redirect('/login');
     });
 }
 
 function adminPage(req, res) {
-  let url = `https://api.jotform.com/user/forms`;
-  console.log(`REQ COOKIE JOTFORM: ${req.cookies.jotform}`);
-  superagent.get(url)
-    .set('APIKEY', `${req.cookies.jotform}`)
-    .then(data => {
-      let content = data.body.content;
-      console.log(`FORMS LISTINGS ${JSON.stringify(content)}`);
-      let forms = content.filter(element => {
-        if (element.status === 'ENABLED') {
-          return new FORM(element);
+  let URL = 'https://api.jotform.com/user/forms';
+  let key = req.cookies.jotform;
+
+  superagent.get(URL)
+    .set('APIKEY', key)
+    .then(result => {
+      let forms = result.body.content.filter(form => {
+        if(form.status === 'ENABLED') {
+          let theForm = new Form(form);
+          console.log(theForm);
+          return theForm;
         }
-      });
-      res.render('pages/admin.ejs', { forms : forms });
+      })
+      res.render('pages/admin', {forms:forms});
     })
+    .catch(err => console.error(err));
 }
 
-function adminCreate(req, res) {
+function showResult(req, res) {
+  let id = req.params.id;
   let key = req.cookies.jotform;
+
+  let URL = `https://api.jotform.com/form/${id}/submissions?apiKey=${key}`;
+
   let title = req.body.newSurvey;
 
-  let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${key}`;
+//   let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${key}`;
 
-  superagent.post(cloneURL)
-    .then( result => {
+//   superagent.post(cloneURL)
+//     .then( result => {
 
-      let id = result.body.content.id;
+//       let id = result.body.content.id;
 
-      let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
+//       let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
 
-      superagent.put(setTitleURL)
-        .send( { 'properties' : { 'pagetitle' : title }} )
-        .then( () => {
-          res.redirect('/admin');
-        })
-        .catch(err => {
-          console.error(err);
-        });
+//       superagent.put(setTitleURL)
+//         .send( { 'properties' : { 'pagetitle' : title }} )
+//         .then( () => {
+//           res.redirect('/admin');
+//         })
+//         .catch(err => {
+//           console.error(err);
+//         });
 
-    })
-    .catch(err => {
-      console.error(err)
-    });
+//     })
+//     .catch(err => {
+//       console.error(err)
+//     });
 
-}
+// }
 
-function graphPage(req, res) {
-  res.render('pages/graph');
-}
 
-function surveyPage(req, res) {
-  res.render('pages/survey');
-}
+  superagent.get(URL)
+    .then(result => {
+      let submissions = result.body.content;
 
-function cloneForm(req, res) {
-  // get API key from cookie
-  let key = req.cookies.jotform;
-  let URL = `https://api.jotform.com/form/203010344934040/clone?apiKey=${key}`;
 
-  superagent.post(URL)
-    .then(() => {
-      res.render('pages/admin');
-    })
-    .catch(err => console.error(err));
+      // this is the total question asked, we'll set that value in reduce below
+      let total = 0;
+      // create an array of each persons sum total of TRUE answers
+      let people = submissions.map( person => {
+        let keys = Object.keys(person.answers);
+        return keys.reduce((acc, key, idx)=>{
+          console.log(person.answers[key]);
+          total = idx;
+          return acc + parseInt(person.answers[key].answer === 'YES' ? 1 : 0);
+        }, 0);
+      });
 
-  // reachout to jotform through superagent clone Tahmina's form
-  // rerender admin
-}
+      // set up an empty array with a length of 'total'
+      let surveyResults = [];
+      surveyResults.length = total;
 
-function adminDelete(req, res) {
-  let key = req.cookies.jotform;
-  //grab ID from database
-  let id = req.params.id;
-  let SQL = `SELECT adminID FROM admin WHERE apiKey=$1;`;
-  let values = [key];
+      for(let i=0; i<people.length; i++)
+        if(!surveyResults[people[i]])
+          surveyResults[people[i]] = 1;
+        else
+          surveyResults[people[i]]++;
 
-  return client.query(SQL, values)
-    .then(() => {
-      let SQL = `UPDATE forms SET closed=$1 WHERE id=$2;`;
-      let values = [true, id]
-      client.query(SQL, values)
-        .then(() => {
-          let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${key}`;
-          superagent.delete(deleteFormURL)
-            .then(() => {
-              res.redirect('/admin', { id : id });
-            })
-        })
-    })
+
+      res.render('pages/graph', { surveyResults : surveyResults });
+
+//   superagent.post(URL)
+//     .then(() => {
+//       res.render('pages/admin');
+
+//     })
     .catch(err => console.error(err));
 }
 
-client.connect()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`------- Listening on port : ${PORT} --------`);
-    });
-  })
-  .catch(err => console.error(err));
+          
+app.listen(PORT, () => {
+  console.log(`------- Listening on port : ${PORT} --------`);
+});
+
+// Not using a db currently
+// client.connect()
+//   .then(() => {
+//     app.listen(PORT, () => {
+//       console.log(`------- Listening on port : ${PORT} --------`);
+//     });
+//   })
+//   .catch(err => console.error(err));
+
+
+

@@ -114,16 +114,30 @@ function showResult(req, res) {
     .then(result => {
       let submissions = result.body.content;
 
+
+      // this is the total question asked, we'll set that value in reduce below
+      let total = 0;
       // create an array of each persons sum total of TRUE answers
       let people = submissions.map( person => {
         let keys = Object.keys(person.answers);
-        return keys.reduce((acc, key)=>{
+        return keys.reduce((acc, key, idx)=>{
           console.log(person.answers[key]);
+          total = idx;
           return acc + parseInt(person.answers[key].answer === 'YES' ? 1 : 0);
         }, 0);
       });
 
-      res.render('pages/results', {people : people});
+      // set up an empty array with a length of 'total'
+      let surveyResults = [];
+      surveyResults.length = total;
+
+      for(let i=0; i<people.length; i++)
+        if(!surveyResults[people[i]])
+          surveyResults[people[i]] = 1;
+        else
+          surveyResults[people[i]]++;
+
+      res.render('pages/graph', { surveyResults : surveyResults });
     })
     .catch(err => console.error(err));
 }

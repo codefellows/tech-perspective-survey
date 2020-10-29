@@ -21,6 +21,7 @@ app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 
 const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -146,7 +147,7 @@ function cloneForm(req, res) {
   let URL = `https://api.jotform.com/form/203010344934040/clone?apiKey=${key}`;
 
   superagent.post(URL)
-    .then(result => {
+    .then(() => {
       res.render('pages/admin');
     })
     .catch(err => console.error(err));
@@ -171,7 +172,7 @@ function adminDelete(req, res) {
           let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${key}`;
           superagent.delete(deleteFormURL)
             .then(() => {
-              res.redirect('/admin');
+              res.redirect('/admin', { id : id });
             })
         })
     })

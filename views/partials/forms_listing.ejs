@@ -14,7 +14,9 @@
     <h2><%= form.title %></h2>
     <a href="<%= form.url %>"><%= form.url %></a>
     <h2> Submision Count: <%= form.count %></h2>
-    <button type="submit">Close Survey</button>
+    <form id="formSubmit" action="/admin/<%= form.id %>?_method=DELETE"  method="post">
+      <button type="submit">Close Survey</button>
+    </form>
   </li>
   <% }); %>
 </ul>

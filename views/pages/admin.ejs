@@ -9,9 +9,9 @@
 <body>
   <%- include( '../layout/header.ejs' ) %>
   <div class="adminPage">
-    <div id="apiLimit">
+    <section id="apiLimit">
       <%- include( '../partials/limit.ejs'), { limit : limit } %>
-    </div>
+    </section>
     <div id="surveyForms">
       <%- include( '../partials/forms_listing', { forms : forms } ) %>
     </div>

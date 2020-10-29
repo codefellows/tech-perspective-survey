@@ -1,9 +1,14 @@
-.navlinks{
+footer {
+  position: sticky;
+  bottom: 0;
+  height: 5vw;
   background-color: black;
-  width: 100%;
-  height: 15vh;
 }
 
-p {
+footer .navlinks{
+  width: 98%;
+}
+
+footer p {
   color: #f7af3c;
 }

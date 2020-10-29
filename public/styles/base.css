@@ -4,5 +4,22 @@ body {
   box-sizing: border-box;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   /* font-family: Gotham Rounded SSm A, Helvetica, sans-serif, serif; */
-  
+  font-size: 2vw;
+}
+
+button {
+  border: none;
+  box-shadow: .2vw .4vw black;
+  border-radius: 2vw;
+  transition: 350ms;
+}
+
+button:hover {
+  border: none;
+  box-shadow: .2vw .4vw black;
+  border-radius: 2vw;
+}
+
+button:active {
+  transform: translateY(.2vw);
 }

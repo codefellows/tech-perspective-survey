@@ -37,6 +37,8 @@ app.get('/login', loginPage);
 app.get('/login/session', loginSessionAuto);
 app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
+app.post('/result', saveResult);
+app.get('/history', surveyHistory);
 
 app.get('/result/:id', showResult);
 app.post('/survey/create', createSurvey);
@@ -159,6 +161,25 @@ function showResult(req, res) {
       res.render('pages/graph', { surveyResults : surveyResults });
     })
     .catch(err => console.error(err));
+}
+
+function saveResult(req,res){
+  let SQL = `INSERT INTO result (people) VALUES ($1);`;
+  let resultValue = [req.body.people];
+  return client.query(SQL, resultValue)
+    .then(
+      res.redirect('/admin')
+    )
+    .catch(err => console.error('error', err));
+}
+
+function surveyHistory(req, res){
+  let SQL = `SELECT * FROM result;`;
+  return client.query(SQL)
+    .then(data =>{
+      res.render('pages/historyGraph', {dataHistory : data.rows})
+    })
+    .catch(err => console.error('error',err));
 }
 
 // ------------ CLONE A NEW SURVEY ------------------------------

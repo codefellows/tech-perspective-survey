@@ -1,229 +1,188 @@
 'use strict';
 
-// dependancies and global variables
 require('dotenv').config();
 require('ejs');
+
+// ------------ DEPENDENCIES --------------
+
 const cors = require('cors');
-const PORT = process.env.PORT || 3000;
 const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
 const methodOverride = require('method-override');
-const { render } = require('ejs');
-const { response } = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+
+// ------------- CONFIG -------------------
+
 const app = express();
-const dataBaseUrl = process.env.DATABASE_URL;
-const client = new pg.Client(dataBaseUrl);
-
-client.on('error', (error) => {
-  console.log(error);
-});
-
-var arrayOfSurveyObject = [];
-var currentClassName = ['untitled'];
-
-//app
-app.use(cors());
-app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 
-//routes
-app.get('/', renderHomePage);
-app.get('/survey', renderSurvey);
-app.post('/defineSession', handleChangeSession);
-app.post('/plot/:survey_session', plotHandler);
-app.get('/history', handleAndDisplayHistory);
-app.get('/graph', renderGraph);
-app.get('/error', handleError);
-app.get('/data', getDataHandler)
-app.get('*', handleUndefinedRoute);
+const PORT = process.env.PORT || 3000;
+const DATABASE_URL = process.env.DATABASE_URL;
+const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
 
-//route functions
-function renderHomePage(request, response) {
-  response.render('pages/index', { surveyName: currentClassName[(currentClassName.length - 1)] });
+const client = new pg.Client(DATABASE_URL);
+app.set('view engine', 'ejs');
+
+
+// -------------- ROUTES ------------------
+
+app.get('/login', loginPage);
+app.get('/login/session', loginSessionAuto);
+app.post('/login/session', loginSessionManual);
+app.get('/admin', adminPage);
+app.post('/admin/create', adminCreate);
+app.get('/graph', graphPage);
+app.get('/survey', surveyPage);
+app.delete('/admin/:id', adminDelete);
+
+// -------------- CONSTRUCTORS ------------------
+
+function FORM(obj) {
+  this.id = obj.id;
+  this.url = obj.url;
+  this.title = obj.title
+  this.count = obj.count
 }
 
-function renderSurvey(request, response) {
-  response.render('pages/survey');
+app.get('/', (req, res) => {
+  if(req.cookies && req.cookies.jotform)
+    res.redirect('/login/session');
+  else
+    res.redirect('/login');
+});
+
+function loginPage(req, res) {
+  res.clearCookie('jotform');
+  res.render('pages/login');
 }
 
-function getDataHandler(request, response) {
-  let today = todaysDate();
-  let arrayOfresultsForm1 = apiCall('hogWCP3L');
-  let arrayOfresultsForm2 = apiCall('RkNsVV0o');
-  let temp = [arrayOfresultsForm1, arrayOfresultsForm2];
-  Promise.all(temp).then(arrayComingIn => {
-    let finalArray = [];
-    for (let i = 0; i < arrayComingIn[0].length; i++) {
-      for (let j = 0; j < arrayComingIn[1].length; j++) {
-        if (arrayComingIn[0][i].id === arrayComingIn[1][j].id) {
-          let add = arrayComingIn[0][i].value + arrayComingIn[1][j].value;
-          finalArray.push(add);
-        }
-      }
-    }
-    console.log(finalArray);
-    let countedSurveyResults = counter(finalArray);
-    arrayOfSurveyObject.push(new Survey(currentClassName[currentClassName.length - 1], today, countedSurveyResults));
-    addNewSurveytoDB(arrayOfSurveyObject[arrayOfSurveyObject.length - 1]);
-  })
-    .then(() => {
-      response.status(200).redirect('/graph');
+// called when a user inputs their API key from the /login page, and is redirected to /login/session via POST
+function loginSessionManual(req, res) {
+  loginSession(req, res, req.body.key);
+}
+
+// called when a user navigates to the / homepage, but is redirected to /login/session via GET
+function loginSessionAuto(req, res) {
+  loginSession(req, res, req.cookies.jotform);
+}
+
+function loginSession(req, res, key) {
+  let URL = `https://api.jotform.com/user?apiKey=${key}`;
+
+  superagent.get(URL)
+    .then( result => {
+      res.cookie('jotform', key);
+      res.redirect('/admin');
     })
     .catch(err => {
-      console.log('error', err)
+      res.clearCookie('jotform');
+      res.redirect('/login');
     });
 }
 
-function todaysDate() {
-  let today = new Date();
-  let dd = String(today.getDate()).padStart(2, '0');
-  let mm = String(today.getMonth() + 1).padStart(2, '0');
-  let yyyy = today.getFullYear();
-  let hour = String(today.getHours()).padStart(2, '0');
-  var time = hour + ':' + String(today.getMinutes()).padStart(2, '0');
-  today = `${yyyy}-${mm}-${dd}T${time}:00`;
-  return today;
-}
-
-function counter(array) {
-  let emptyArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  let bucketArr = emptyArray.map((value, bucket) => {
-    let count = 0;
-    array.forEach((yesValue) => {
-      if ((yesValue) === bucket) {
-        count++
-      }
-    })
-    return count;
-  })
-  return bucketArr
-}
-
-function apiCall(form) {
-  let date = new Date();
-  let dd = String(date.getDate()).padStart(2, '0');
-  let mm = String(date.getMonth() + 1).padStart(2, '0');
-  let yyyy = date.getFullYear();
-  let hour = String(date.getHours()).padStart(2, '0') - 1;
-  var time = hour + ':' + String(date.getMinutes()).padStart(2, '0');
-  let oneHourAgo = `${yyyy}-${mm}-${dd}T${time}:00`;
-  let key = process.env.TYPE_FORM_KEY;
-  let arrayOfResultsObjects = [];
-  const longKey = `Bearer ${key}`;
-  const url = `https://api.typeform.com/forms/${form}/responses?since=${oneHourAgo}`;
-  return superagent.get(url)
-    .set('Authorization', longKey)
-    .then(results => {
-      let items = JSON.parse(results.text).items
-      for (let i = 0; i < items.length; i++) {
-
-        let total = 0;
-        for (let j = 0; j < items[i].answers.length; j++) {
-          if (items[i].answers[j].choice.label === 'True') {
-            total++;
-          }
+function adminPage(req, res) {
+  let url = `https://api.jotform.com/user/forms`;
+  console.log(`REQ COOKIE JOTFORM: ${req.cookies.jotform}`);
+  superagent.get(url)
+    .set('APIKEY', `${req.cookies.jotform}`)
+    .then(data => {
+      let content = data.body.content;
+      console.log(`FORMS LISTINGS ${JSON.stringify(content)}`);
+      let forms = content.filter(element => {
+        if (element.status === 'ENABLED') {
+          return new FORM(element);
         }
-        let obj = {};
-        obj['id'] = items[i].metadata.network_id;
-        obj['value'] = total;
-        arrayOfResultsObjects.push(obj);
-      }
-      console.log(arrayOfResultsObjects);
-      return arrayOfResultsObjects;
+      });
+      res.render('pages/admin.ejs', { forms : forms });
+    })
+}
+
+function adminCreate(req, res) {
+  let key = req.cookies.jotform;
+  let title = req.body.newSurvey;
+
+  let cloneURL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${key}`;
+
+  superagent.post(cloneURL)
+    .then( result => {
+
+      let id = result.body.content.id;
+
+      let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
+
+      superagent.put(setTitleURL)
+        .send( { 'properties' : { 'pagetitle' : title }} )
+        .then( () => {
+          res.redirect('/admin');
+        })
+        .catch(err => {
+          console.error(err);
+        });
+
     })
     .catch(err => {
-      console.log('error', err)
+      console.error(err)
+    });
+
+}
+
+function graphPage(req, res) {
+  res.render('pages/graph');
+}
+
+function surveyPage(req, res) {
+  res.render('pages/survey');
+}
+
+function cloneForm(req, res) {
+  // get API key from cookie
+  let key = req.cookies.jotform;
+  let URL = `https://api.jotform.com/form/203010344934040/clone?apiKey=${key}`;
+
+  superagent.post(URL)
+    .then(() => {
+      res.render('pages/admin');
     })
+    .catch(err => console.error(err));
+
+  // reachout to jotform through superagent clone Tahmina's form
+  // rerender admin
 }
 
-function handleChangeSession(request, response) {
-  const currentSurveySession = request.body.sessionName;
-  currentClassName.push(currentSurveySession);
-  response.status(200).redirect('/');
-}
+function adminDelete(req, res) {
+  let key = req.cookies.jotform;
+  //grab ID from database
+  let id = req.params.id;
+  let SQL = `SELECT adminID FROM admin WHERE apiKey=$1;`;
+  let values = [key];
 
-function handleAndDisplayHistory(request, response) {
-  //get previous data from database
-  const sql = 'SELECT * FROM survey_results;';
-  client.query(sql)
-    .then(incomingPreviousResults => {
-      const allPreviousResults = incomingPreviousResults.rows;
-      allPreviousResults.forEach(value => {
-        let found = false;
-        for (var i = 0; i < arrayOfSurveyObject.length; i++) {
-          if (arrayOfSurveyObject[i].survey_session === value.survey_session) {
-            found = true;
-            break;
-          }
-        }
-        if (found === false) {
-          const numArr = JSON.parse(value.results_array);
-          arrayOfSurveyObject.push(new Survey(value.survey_session, value.date_conducted, numArr));
-        }
-      })
-
-      response.render('pages/pastresults', { allResultsArr: arrayOfSurveyObject });
+  return client.query(SQL, values)
+    .then(() => {
+      let SQL = `UPDATE forms SET closed=$1 WHERE id=$2;`;
+      let values = [true, id]
+      client.query(SQL, values)
+        .then(() => {
+          let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${key}`;
+          superagent.delete(deleteFormURL)
+            .then(() => {
+              res.redirect('/admin', { id : id });
+            })
+        })
     })
-    .catch((error) => {
-      console.log('An eror has occured: ', error);
-      response.status(500).redirect('pages/error');
-    })
+    .catch(err => console.error(err));
 }
 
-function renderGraph(request, response) {
-  const sql = 'SELECT * FROM survey_results;';
-  client.query(sql)
-    .then(data => {
-      const totalRows = data.rows.length;
-      const dataObjectWantToApply = { survey_session: data.rows[totalRows - 1].survey_session, results_array: JSON.parse(data.rows[totalRows - 1].results_array) };
-      response.render('pages/graph', { key: dataObjectWantToApply });
-    })
-}
-
-function handleError(request, response) {
-  console.log('An error has occured.');
-  response.render('pages/error');
-}
-
-function plotHandler(request, response) {
-  console.log(request.body);
-  const dataObjectWantToApply = { survey_session: request.body.survey_session, results_array: request.body.results_array };
-
-  response.render('pages/plot', { key: dataObjectWantToApply });
-}
-
-function handleUndefinedRoute(request, response) {
-  response.status(404).send('#404: Page not found.')
-}
-
-
-//constructor function
-function Survey(className, date_conducted, resultsArray) {
-  this.survey_session = className;
-  this.date_conducted = date_conducted;
-  this.results_array = resultsArray || [];
-}
-
-function addNewSurveytoDB(obj) {
-  const resultsJson = JSON.stringify(obj.results_array);
-  const sql = 'INSERT INTO survey_results (survey_session, date_conducted, results_array) VALUES ($1, $2, $3)';
-  const safeValues = [obj.survey_session, obj.date_conducted, resultsJson];
-  console.log(safeValues);
-  client.query(sql, safeValues)
-}
-
-
-//server is on
 client.connect()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Listening on ${PORT}`);
+      console.log(`------- Listening on port : ${PORT} --------`);
     });
   })
-  .catch((error) => {
-    console.log('Sorry, something went wrong. We were unable to connect to the postres SQL database.', error);
-    response.status(500).redirect('pages/error');
-  });
+  .catch(err => console.error(err));

@@ -39,7 +39,7 @@ app.get('/admin', adminPage);
 app.post('/admin/create', adminCreate);
 app.get('/graph', graphPage);
 app.get('/survey', surveyPage);
-app.delete('/admin', adminDelete);
+app.delete('/admin/:id', adminDelete);
 
 // -------------- CONSTRUCTORS ------------------
 
@@ -117,7 +117,7 @@ function adminCreate(req, res) {
       let setTitleURL = `https://api.jotform.com/form/${id}/properties?apiKey=${key}`;
 
       superagent.put(setTitleURL)
-        .send( { "properties" : { "pagetitle" : title }} )
+        .send( { 'properties' : { 'pagetitle' : title }} )
         .then( () => {
           res.redirect('/admin');
         })
@@ -158,20 +158,24 @@ function cloneForm(req, res) {
 function adminDelete(req, res) {
   let key = req.cookies.jotform;
   //grab ID from database
-  let id;
-  let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${key}`;
+  let id = req.params.id;
   let SQL = `SELECT adminID FROM admin WHERE apiKey=$1;`;
   let values = [key];
 
   return client.query(SQL, values)
-    .then(result => {
-      let SQL = `UPDATE `
+    .then(() => {
+      let SQL = `UPDATE forms SET closed=$1 WHERE id=$2;`;
+      let values = [true, id]
+      client.query(SQL, values)
+        .then(() => {
+          let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${key}`;
+          superagent.delete(deleteFormURL)
+            .then(() => {
+              res.redirect('/admin');
+            })
+        })
     })
     .catch(err => console.error(err));
-  // superagent.delete(deleteFormURL)
-  //   .then(result => {
-  //     res.redirect('pages/admin');
-  //   })
 }
 
 client.connect()

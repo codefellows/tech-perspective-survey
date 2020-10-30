@@ -24,4 +24,5 @@ button:hover {
 
 button:active {
   transform: translateY(.2vw);
+  box-shadow: none;
 }

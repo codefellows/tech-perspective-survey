@@ -8,12 +8,8 @@ require('ejs');
 const cors = require('cors');
 const express = require('express');
 const superagent = require('superagent');
-const pg = require('pg');
-const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { query } = require('express');
-
 
 // ------------- CONFIG -------------------
 
@@ -24,13 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-const PORT = process.env.PORT || 3000;
-const DATABASE_URL = process.env.DATABASE_URL;
+const PORT = process.env.PORT;
 const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
 
-const client = new pg.Client(DATABASE_URL);
 app.set('view engine', 'ejs');
-
 
 // -------------- ROUTES ------------------
 
@@ -38,9 +31,6 @@ app.get('/login', loginPage);
 app.get('/login/session', loginSessionAuto);
 app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
-app.post('/result', saveResult);
-app.get('/history', surveyHistory);
-
 app.get('/result/:id', showResult);
 app.post('/survey/create', createSurvey);
 app.get('/survey/:id', doSurvey);
@@ -49,7 +39,6 @@ app.get('/survey/:id', doSurvey);
 
 function Form(obj) {
   this.id = obj.id;
-  this.url = obj.url;
   this.created_at= obj.created_at;
   this.count = obj.count;
 }
@@ -143,7 +132,7 @@ function showResult(req, res) {
         return keys.reduce((acc, key, idx)=>{
           console.log(person.answers[key]);
           total = idx; // keep setting that total as the idx
-          return acc + parseInt(person.answers[key].answer === 'YES' ? 1 : 0); // I think this should be changed to TRUE, if we decide the actual form should have true/false answers
+          return acc + parseInt(person.answers[key].answer === 'TRUE' ? 1 : 0);
         }, 0);
       });
 
@@ -164,30 +153,13 @@ function showResult(req, res) {
     .catch(err => console.error(err));
 }
 
-function saveResult(req,res){
-  let SQL = `INSERT INTO result (people) VALUES ($1);`;
-  let resultValue = [req.body.people];
-  return client.query(SQL, resultValue)
-    .then(
-      res.redirect('/admin')
-    )
-    .catch(err => console.error('error', err));
-}
-
-function surveyHistory(req, res){
-  let SQL = `SELECT * FROM result;`;
-  return client.query(SQL)
-    .then(data =>{
-      res.render('pages/historyGraph', {dataHistory : data.rows})
-    })
-    .catch(err => console.error('error',err));
-}
-
 // ------------ CLONE A NEW SURVEY ------------------------------
 
 function createSurvey(req, res) {
   let apiKey = req.cookies.jotform;
   let URL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${apiKey}`
+
+  console.log('TEMPLATE FORM', TEMPLATE_FORM);
 
   superagent.post(URL)
     .then( () => {
@@ -200,24 +172,11 @@ function createSurvey(req, res) {
 
 function doSurvey(req, res) {
   let id = req.params.id;
-
   res.render('pages/survey', { id : id });
 }
-
 
 // ------------ START LISTENING ON A PORT -----------------------
 
 app.listen(PORT, () => {
   console.log(`------- Listening on port : ${PORT} --------`);
 });
-
-
-
-// Not using a db currently
-// client.connect()
-//   .then(() => {
-//     app.listen(PORT, () => {
-//       console.log(`------- Listening on port : ${PORT} --------`);
-//     });
-//   })
-//   .catch(err => console.error(err));

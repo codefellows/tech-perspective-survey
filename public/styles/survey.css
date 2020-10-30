@@ -1,0 +1,18 @@
+div#surveyHeader {
+  color:#1c3128;
+  font-size: 3vw;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 5vw;
+}
+
+.surveyWelcome {
+  text-align: center;
+  color:#1c3128;
+  font-weight: 500;
+  margin-bottom: 5vw;
+}
+
+#mainSurveyArea {
+  margin-bottom:12vw;
+}

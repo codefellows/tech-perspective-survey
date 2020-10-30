@@ -8,10 +8,17 @@
 
 <body>
   <%- include( '../layout/header.ejs' ) %>
-  <%- include( '../partials/limit.ejs'), { limit : limit } %>
-  <%- include( '../partials/forms_listing', { forms : forms } ) %>
-  <%- include( '../partials/createsurvey' ) %>
-  <%- include( '../layout/footer.ejs' ) %>
+  <div class="adminPage">
+    <section id="apiLimit">
+      <%- include( '../partials/limit.ejs'), { limit : limit } %>
+    </section>
+    <div id="surveyForms">
+      <%- include( '../partials/forms_listing', { forms : forms } ) %>
+    </div>
+    <div id="createSurvey">
+      <%- include( '../partials/createsurvey' ) %>
+    </div>
+  </div>
 </body>
 
 </html>

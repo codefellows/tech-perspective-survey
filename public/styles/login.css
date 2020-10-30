@@ -1,0 +1,31 @@
+.login {
+  background-color: #1D254F;
+  width: 70vw;
+  height: 40vw;
+  display: flex;
+  justify-content: center;
+  border: solid 2vh #f7af3c;
+  border-radius: 2vw;
+  position: relative;
+  margin: 10vh auto;
+}
+
+input#loginInput {
+  align-items: center;
+  background-color: #FFE7D6;
+  Width: 30vw;
+  text-align: center;
+  border-radius: 2vw;
+}
+
+button#loginButton {
+  background-color: #f7af3c;
+  color: #1C3128;
+  border-radius: 10px;
+  padding: .5vw;
+}
+
+.loginForm {
+  position: absolute;
+  top: 49%;
+}

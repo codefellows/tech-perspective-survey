@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Technology Survey Historical Results</title>
+  <%- include( '../layout/head.ejs' ) %>
+</head>
+
+<body>
+  <%- include( '../layout/header.ejs' ) %>
+  <div class="adminPage">
+    <section id="apiLimit">
+      <%- include( '../partials/limit.ejs'), { limit : limit } %>
+    </section>
+    <div id="createSurvey">
+      <%- include( '../partials/createsurvey' ) %>
+    </div>
+    <div id="surveyForms">
+      <%- include( '../partials/forms_listing', { forms : forms } ) %>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+#apiLimit {
+  text-align: center;
+  background-color: #1c3128;
+  color: #ebb3bb;
+  font-size: 2.5vw;
+  margin-top: 10vw;
+  margin-bottom: 2vw;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2vw;
+  width: 75.5vw;
+  border-radius: 2vw;
+  font-weight: bold;
+}
+
+#surveyForms li {
+  height: 12vw;
+  border-radius: 2vw;
+  width: 80%;
+  background-color: #1D254F;
+  margin: 1vw auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 2vw;
+}
+
+#surveyForms li * {
+  padding: 0 1vw;
+  color: #f7af3c
+}
+
+#surveyForms button {
+  color: #1d254f;
+  background-color: #f7af3c;
+}
+
+#surveyForms button:hover {
+  color: black;
+  background-color: #ffe7d6;
+}
+
+#createSurvey {
+  display: flex;
+  justify-content: center;
+}
+
+#createSurveyButton {
+  background-color: #1c3128;
+  color: #ebb3bb;
+  margin: 2vw;
+}
+
+#createSurveyButton:hover {
+  color: #1c3128;
+  background-color: #ebb3bb;
+}
+
+/* 
+.adminPage {
+  width: 70vh;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  background-color: #1D254F;
+  
+} */

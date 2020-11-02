@@ -5,7 +5,6 @@ A questionnaire to help people see other's perspectives.
 **Version**: 2.1.0
 
 **Refactored by**: Tahmina RInger, Wilfried Motchoffo, Mark Bell
-
 **Original Authors**: Dominique Augurson, Spencer Lazzar, Kevin McNeil, Paul Leonard
 
 ## Overview

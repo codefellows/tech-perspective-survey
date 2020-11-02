@@ -2,7 +2,7 @@
 A questionnaire to help people see other's perspectives.
 
 
-**Author**: Dominique Augurson, Spencer Lazzar, Kevin McNeil, Paul Leonard
+**Author**: Wilfried Motchoffo, Mark Bell, Tahmina Ringer
 **Version**: x.x.x
 
 ## Overview

@@ -2,11 +2,14 @@
 <ul>
   <% forms.forEach( form => { %>
   <li>
-    <h2><%= form.created_at %></h2>
+    <h2><%= form.created_at.slice(0, -3) %></h2>
     <a href="/survey/<%= form.id %>">/survey/<%= form.id %></a>
     <h2> Submisions: <%= form.count %></h2>
     <form method="get" action="/result/<%= form.id %>">
       <button type="submit">Results</button>
+    </form>
+    <form id="deleteSurvey" method="post" action="/delete/<%= form.id %>?_method=DELETE">
+      <button id="deleteSurveyButton" type="submit">Detete Survey</button>
     </form>
   </li>
   <% }); %>

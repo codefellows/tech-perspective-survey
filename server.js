@@ -10,6 +10,7 @@ const express = require('express');
 const superagent = require('superagent');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const methodOverride = require('method-override');
 
 // ------------- CONFIG -------------------
 
@@ -19,6 +20,7 @@ app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 
 const PORT = process.env.PORT;
 const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
@@ -33,6 +35,7 @@ app.get('/login', loginPage);
 app.get('/login/session', loginSessionAuto);
 app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
+app.delete('/delete/:id', deleteSurvey);
 app.get('/result/:id', showResult);
 app.post('/survey/create', createSurvey);
 app.get('/survey/:id', doSurvey);
@@ -41,7 +44,7 @@ app.get('/survey/:id', doSurvey);
 
 function Form(obj) {
   this.id = obj.id;
-  this.created_at= obj.created_at;
+  this.created_at = obj.created_at;
   this.count = obj.count;
 }
 
@@ -106,10 +109,33 @@ function adminPage(req, res) {
               return theForm;
             }
           })
+          console.log(forms);
           res.render('pages/admin', {forms:forms, limit:limit});
         })
         .catch(err => console.error(err));
     })
+    .catch(err => console.error(err));
+}
+
+function deleteSurvey(req, res) {
+  let apiKey = req.cookies.jotform;
+  let id = req.params.id;
+  // let SQL = `SELECT adminID FROM admin WHERE apiKey=$1;`;
+  // let values = [key];
+
+  // return client.query(SQL, values)
+  //   .then(() => {
+  //     let SQL = `UPDATE forms SET closed=$1 WHERE id=$2;`;
+  //     let values = [true, id];
+  //     client.query(SQL, values)
+  //       .then(() => {
+          let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
+          superagent.delete(deleteFormURL)
+            .then(() => {
+              res.redirect('/admin');
+            })
+    //     })
+    // })
     .catch(err => console.error(err));
 }
 

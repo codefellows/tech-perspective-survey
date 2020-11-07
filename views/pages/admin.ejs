@@ -12,9 +12,11 @@
     <section id="apiLimit">
       <%- include( '../partials/limit.ejs'), { limit : limit } %>
     </section>
-    <div id="createSurvey">
-      <%- include( '../partials/createsurvey' ) %>
-    </div>
+    <% if (forms.length < 5){ %>
+      <div id="createSurvey">
+        <%- include( '../partials/createsurvey' ) %>
+      </div>
+    <% } %>
     <div id="surveyForms">
       <%- include( '../partials/forms_listing', { forms : forms } ) %>
     </div>

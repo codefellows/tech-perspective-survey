@@ -27,6 +27,8 @@ const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
 
 app.set('view engine', 'ejs');
 
+const HARDCODE_ID = 203028278356053;
+
 // -------------- ROUTES ------------------
 
 app.get('/login', loginPage);
@@ -140,7 +142,8 @@ function deleteSurvey(req, res) {
 // ------------ SHOW THE GRAPH OF A SURVEY ----------------------
 
 function showResult(req, res) {
-  let id = req.params.id;
+  // let id = req.params.id;
+  let id = HARDCODE_ID;
   let key = req.cookies.jotform;
   let URL = `https://api.jotform.com/form/${id}/submissions?apiKey=${key}`;
 
@@ -197,7 +200,8 @@ function createSurvey(req, res) {
 // ---- DO A SURVEY (this is the route associated with a link that is shared to users) ----
 
 function doSurvey(req, res) {
-  let id = req.params.id;
+  // let id = req.params.id;
+  let id = HARDCODE_ID;
   res.render('pages/survey', { id : id });
 }
 

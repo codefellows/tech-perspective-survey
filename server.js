@@ -107,6 +107,7 @@ function adminPage(req, res) {
               return theForm;
             }
           })
+          console.log(forms);
           res.render('pages/admin', {forms:forms, limit:limit});
         })
         .catch(err => console.error(err));
@@ -127,10 +128,8 @@ function deleteSurvey(req, res) {
   //     client.query(SQL, values)
   //       .then(() => {
           let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
-          console.log(deleteFormURL);
           superagent.delete(deleteFormURL)
-            .then(result => {
-              console.log(result.body);
+            .then(() => {
               res.redirect('/admin');
             })
     //     })

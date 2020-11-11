@@ -57,3 +57,8 @@
   color: #1d254f;
   background-color: #EBB3BB;
 }
+
+#deleteSurveyAlert{
+  text-align: center;
+  color: #EA4444;
+}

@@ -44,7 +44,8 @@ app.get('/survey/:id', doSurvey);
 // -------------- CONSTRUCTORS ------------------
 
 function Form(obj) {
-  this.id = obj.id;
+  this.username = obj.username;
+  this.survey_id = obj.id;
   this.created_at = obj.created_at;
   this.count = obj.count;
 }
@@ -71,6 +72,7 @@ function loginSessionManual(req, res) {
 // called when a user navigates to the / homepage, but is redirected to /login/session via GET
 function loginSessionAuto(req, res) {
   loginSession(req, res, req.cookies.jotform);
+
 }
 
 // called from either the automatic or the manual login
@@ -107,14 +109,14 @@ function adminPage(req, res) {
           let forms = result.body.content.filter(form => {
             if(form.status === 'ENABLED') {
               let theForm = new Form(form);
-              // console.log('!!!!!!!!!!!', theForm)
+              console.log('!!!!!!!!!!!', theForm)
 
-              // let SQL = `INSERT INTO divtech (id, created_at, count)`;
-              // let values = [theForm.id, theForm.created_at, theForm.count];
-              // client.query(SQL, values)
-              //   .then(results => {
-              //     console.log(results);
-              //   })
+              let SQL = `INSERT INTO divtech (username, survey_id, created_at, count) VALUES ($1, $2, $3, $4);`;
+              let values = [theForm.username, theForm.survey_id, theForm.created_at, theForm.count];
+              client.query(SQL, values)
+                .then(results => {
+                  console.log(results);
+                })
               return theForm;
             }
           })
@@ -129,22 +131,11 @@ function adminPage(req, res) {
 function deleteSurvey(req, res) {
   let apiKey = req.cookies.jotform;
   let id = req.params.id;
-  // let SQL = `SELECT adminID FROM admin WHERE apiKey=$1;`;
-  // let values = [key];
-
-  // return client.query(SQL, values)
-  //   .then(() => {
-  //     let SQL = `UPDATE forms SET closed=$1 WHERE id=$2;`;
-  //     let values = [true, id];
-  //     client.query(SQL, values)
-  //       .then(() => {
   let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
   superagent.delete(deleteFormURL)
     .then(() => {
       res.redirect('/admin');
     })
-    //     })
-    // })
     .catch(err => console.error(err));
 }
 

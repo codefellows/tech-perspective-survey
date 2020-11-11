@@ -4,7 +4,7 @@ require('dotenv').config();
 require('ejs');
 
 // ------------ DEPENDENCIES --------------
-
+const pg =require('pg');
 const cors = require('cors');
 const express = require('express');
 const superagent = require('superagent');
@@ -15,6 +15,7 @@ const methodOverride = require('method-override');
 // ------------- CONFIG -------------------
 
 const app = express();
+const client = new pg.Client(process.env.DATABASE_URL);
 app.use(cors());
 app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +28,7 @@ const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
 
 app.set('view engine', 'ejs');
 
-const HARDCODE_ID = 203028278356053;
+const HARDCODE_ID = 203156128499057;
 
 // -------------- ROUTES ------------------
 
@@ -106,6 +107,14 @@ function adminPage(req, res) {
           let forms = result.body.content.filter(form => {
             if(form.status === 'ENABLED') {
               let theForm = new Form(form);
+              // console.log('!!!!!!!!!!!', theForm)
+
+              // let SQL = `INSERT INTO divtech (id, created_at, count)`;
+              // let values = [theForm.id, theForm.created_at, theForm.count];
+              // client.query(SQL, values)
+              //   .then(results => {
+              //     console.log(results);
+              //   })
               return theForm;
             }
           })
@@ -129,11 +138,11 @@ function deleteSurvey(req, res) {
   //     let values = [true, id];
   //     client.query(SQL, values)
   //       .then(() => {
-          let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
-          superagent.delete(deleteFormURL)
-            .then(() => {
-              res.redirect('/admin');
-            })
+  let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
+  superagent.delete(deleteFormURL)
+    .then(() => {
+      res.redirect('/admin');
+    })
     //     })
     // })
     .catch(err => console.error(err));
@@ -206,7 +215,9 @@ function doSurvey(req, res) {
 }
 
 // ------------ START LISTENING ON A PORT -----------------------
-
-app.listen(PORT, () => {
-  console.log(`------- Listening on port : ${PORT} --------`);
-});
+client.connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`------- Listening on port : ${PORT} --------`);
+    });
+  })

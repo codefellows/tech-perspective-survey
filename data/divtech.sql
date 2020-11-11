@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS divtech;
+
+CREATE TABLE divtech (
+id SERIAL PRIMARY KEY,
+created_at VARCHAR(255),
+count NUMERIC
+);

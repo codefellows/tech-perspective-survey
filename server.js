@@ -41,12 +41,12 @@ app.delete('/delete/:id', deleteSurvey);
 app.get('/result/:id', showResult);
 app.post('/survey/create', createSurvey);
 app.get('/survey/:id', doSurvey);
+app.get('/admin', showPastResults);
 
 
 // -------------- CONSTRUCTORS ------------------
 
-function Form(count, obj, api) {
-  this.jotform_api = null;
+function Form(count, obj) {
   this.username = obj.username;
   this.survey_id = obj.id;
   this.created_at = obj.created_at;
@@ -113,13 +113,6 @@ function adminPage(req, res) {
             if(form.status === 'ENABLED') {
               let theForm = new Form(null, form);
               // console.log('!!!!!!!!!!!', theForm)
-
-              let SQL = `INSERT INTO divtech (jotform_api, username, survey_id, created_at, true_answer) VALUES ($1, $2, $3, $4, $5);`;
-              let values = [theForm.jotform_api, theForm.username, theForm.survey_id, theForm.created_at, theForm.true_answer];
-              client.query(SQL, values)
-                .then(results => {
-                  console.log(results);
-                })
               return theForm;
             }
           })
@@ -145,48 +138,47 @@ function saveDatabaseDeleteForm(req, res) {
       for(let i = 0; i < array.length; i++) {
         let surveyArray = array[i].answers
         console.log('another string', surveyArray)
-        for(let j = 0; j < surveyArray.length; j++) {
-          //need to figure out how to address incrementing number key in array that is blooking from answer.
-          if(surveyArray[j].answer === 'TRUE') {
-            console.log('is this true');
+        let keys = Object.keys(surveyArray);
+        keys.forEach(key => {
+          if(surveyArray[key].answer === 'TRUE') {
             counter ++;
           }
-        }
+        })
+        console.log('this is the counter', counter);
       }
     })
+
+    //only saving true answers to database not the rest of the information
     .then(() => {
       let URL = 'https://api.jotform.com/user/forms';
       superagent.get(URL)
         .set('APIKEY', apiKey)
         .then(result => {
+          let array = result.body.content;
           console.log('Here is a string', counter);
-          let form = result.body.content;
-          let theForm = new Form(counter, form, null);
-          let SQL = `INSERT INTO divtech (jotform_api, username, survey_id, created_at, true_answer) VALUES ($1, $2, $3, $4, $5);`;
-          let values = [theForm.jotform_api, theForm.username, theForm.survey_id, theForm.created_at, theForm.true_answer];
+          let form = '';
+          array.forEach(index =>{
+            if (index.id === id) {
+              form = index;
+            }
+          });
+          console.log('console logging form', form);
+          let theForm = new Form(counter, form);
+          let SQL = `INSERT INTO divtech (username, survey_id, created_at, true_answer) VALUES ($1, $2, $3, $4);`;
+          let values = [theForm.username, theForm.survey_id, theForm.created_at, theForm.true_answer];
           client.query(SQL, values)
             .then(results => {
-              console.log(results);
+              console.log('what is resuslts', results);
             })
         })
     })
 }
 
-//need clarification why/if we need separation between api key and username
-//look into double four loop to know why nested loop isnt working.
-
-//result.body.content = first loop
-//inside loop - each index of i content[i].answers=array
-//inside second loop check answer === true. counter ++
-//make let counter = 0
-//call new constructor funtion, look back at location and city explore add second thing for total number been making pass
-//move function call to delete survey function right before superagent
-
-
 function deleteSurvey(req, res) {
   let apiKey = req.cookies.jotform;
   let id = req.params.id;
   let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
+  saveDatabaseDeleteForm(req,res);
   superagent.delete(deleteFormURL)
     .then(() => {
       res.redirect('/admin');
@@ -195,6 +187,9 @@ function deleteSurvey(req, res) {
 }
 
 // ------------ SHOW THE GRAPH OF A SURVEY ----------------------
+
+//increments new surveys that do not have previous results ---- increments anything else that only has a single entry
+//if survey count result has more than one entry it does not increment.
 
 function showResult(req, res) {
   console.log(req.params.id, 'lskdjflsdkfkdf');
@@ -215,10 +210,10 @@ function showResult(req, res) {
         return keys.reduce((acc, key, idx)=>{
           // console.log(person.answers[key]);
           total = idx; // keep setting that total as the idx
-          return acc + parseInt(person.answers[key].answer === 'TRUE' ? 1 : 0);
+          return acc + (person.answers[key].answer === 'TRUE' ? 1 : 0);
         }, 0);
       });
-      console.log(total);
+      console.log('here is the people array', people);
       // set up an empty array with a length of 'total', which we set earlier
       let surveyResults = [];
       surveyResults.length = total;
@@ -231,8 +226,8 @@ function showResult(req, res) {
           surveyResults[people[i]]++;
 
       // pass those results through the page/graph ejs
-      saveDatabaseDeleteForm(req,res);
-      res.render('pages/graph', { surveyResults : surveyResults });
+      
+      res.render('pages/graph', { surveyResults : people });
     })
     .catch(err => console.error(err));
 }
@@ -252,12 +247,22 @@ function createSurvey(req, res) {
     .catch(err => console.error(err));
 }
 
+//check routes in res.redirect, ejs and above
+function showPastResults(req, res) {
+  let SQL = `SELECT * FROM divtech;`;
+  client.query(SQL)
+    .then(() => {
+      res.redirect('/admin')
+    })
+}
+
 // ---- DO A SURVEY (this is the route associated with a link that is shared to users) ----
 
 function doSurvey(req, res) {
   let id = HARDCODE_ID || req.params.id;
   res.render('pages/survey', { id : id });
 }
+
 
 // ------------ START LISTENING ON A PORT -----------------------
 client.connect()

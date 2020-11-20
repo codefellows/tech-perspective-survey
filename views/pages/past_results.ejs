@@ -13,7 +13,8 @@
         <li>
           <h2><%= form.created_at.slice(0, -8) %></h2>
           <a href="https://div-inc.herokuapp.com/survey/<%= form.survey_id %>">/survey/<%= form.survey_id %></a>
-          <h2> Submisions: <%= form.true_answer %></h2>
+          <h2> Number Surveyed: <%= form.count %></h2>
+          <h2> Total True Answers: <%= form.true_answer %></h2>
         </li>
       <% }) %>
     </ul>

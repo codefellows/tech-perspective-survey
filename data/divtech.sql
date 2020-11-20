@@ -8,6 +8,7 @@ id SERIAL PRIMARY KEY,
 username VARCHAR(255),
 survey_id VARCHAR(255),
 created_at VARCHAR(255),
+count VARCHAR(255),
 true_answer TEXT
 );
 

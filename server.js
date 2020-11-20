@@ -47,11 +47,12 @@ app.post('/past_results', showPastResults);
 
 // -------------- CONSTRUCTORS ------------------
 
-function Form(count, obj) {
+function Form(trueAnswer, obj) {
   this.username = obj.username;
   this.survey_id = obj.id;
   this.created_at = obj.created_at;
-  this.true_answer = count;
+  this.count = obj.count;
+  this.true_answer = trueAnswer;
 }
 
 // -------- LOGIN ROUTES ------------------------------------------
@@ -166,8 +167,8 @@ function saveDatabaseDeleteForm(req, res) {
           });
           console.log('console logging form', form);
           let theForm = new Form(counter, form);
-          let SQL = `INSERT INTO divtech (username, survey_id, created_at, true_answer) VALUES ($1, $2, $3, $4);`;
-          let values = [theForm.username, theForm.survey_id, theForm.created_at, theForm.true_answer];
+          let SQL = `INSERT INTO divtech (username, survey_id, created_at, count, true_answer) VALUES ($1, $2, $3, $4, $5);`;
+          let values = [theForm.username, theForm.survey_id, theForm.created_at, theForm.count, theForm.true_answer];
           client.query(SQL, values)
             .then(results => {
               console.log('what is resuslts', results);
@@ -221,15 +222,13 @@ function showResult(req, res) {
       surveyResults.length = total;
 
       // now lets loop through our 'people' array, and increment the corresponing surveyResults idx
-      for(let i=0; i<people.length; i++)
-        if(!surveyResults[people[i]])
-          surveyResults[people[i]] = 1;
-        else
-          surveyResults[people[i]]++;
-
+      for(let i=0; i<people.length; i++) {
+        if(!surveyResults[people[i]]) surveyResults[people[i]] = 1;
+        else surveyResults[people[i]]++;
+      }
       // pass those results through the page/graph ejs
-
-      res.render('pages/graph', { surveyResults : people });
+      console.log(surveyResults);
+      res.render('pages/graph', { surveyResults });
     })
     .catch(err => console.error(err));
 }

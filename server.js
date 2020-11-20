@@ -12,7 +12,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const { request } = require('http');
-const frameguard = require('frameguard')
 
 // ------------- CONFIG -------------------
 
@@ -24,7 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(methodOverride('_method'));
-app.use(frameguard({ action : 'SAMEORIGIN'}));
 
 const PORT = process.env.PORT;
 const TEMPLATE_FORM = process.env.TEMPLATE_FORM;

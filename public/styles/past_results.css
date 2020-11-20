@@ -1,0 +1,41 @@
+#pastForms {
+margin-top: 10vw;
+}
+
+h1 {
+  text-align: center;
+  background-color: #f7af3c;
+  border: solid black 0.25vw;
+  color: #1D254F;
+  font-size: 2.5vw;
+  margin-top: 10vw;
+  margin-bottom: 2vw;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2vw;
+  width: 75.5vw;
+  border-radius: 1vw;
+  font-weight: bold;
+}
+
+#pastForms li{
+  height: 8vw;
+  border-radius: .5vw;
+  width: 80%;
+  background-color: #1C3128;
+  margin: 1vw auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 2vw;
+}
+
+#pastForms li * {
+  padding: 0 1vw;
+  color: #f7af3c;
+}
+
+form.adminRout {
+  margin-left: 5.5vw;
+}

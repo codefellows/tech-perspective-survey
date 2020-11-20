@@ -1,7 +1,8 @@
 #apiLimit {
   text-align: center;
-  background-color: #1c3128;
-  color: #ebb3bb;
+  background-color: #f7af3c;
+  border: solid black 0.25vw;
+  color: #1D254F;
   font-size: 2.5vw;
   margin-top: 10vw;
   margin-bottom: 2vw;
@@ -9,15 +10,15 @@
   margin-right: auto;
   padding: 2vw;
   width: 75.5vw;
-  border-radius: 2vw;
+  border-radius: 1vw;
   font-weight: bold;
 }
 
 #surveyForms li {
-  height: 12vw;
-  border-radius: 2vw;
+  height: 8vw;
+  border-radius: .5vw;
   width: 80%;
-  background-color: #1D254F;
+  background-color: #1C3128;
   margin: 1vw auto;
   display: flex;
   flex-direction: row;
@@ -28,7 +29,7 @@
 
 #surveyForms li * {
   padding: 0 1vw;
-  color: #f7af3c
+  color: #f7af3c;
 }
 
 #surveyForms button {
@@ -38,7 +39,7 @@
 
 #surveyForms button:hover {
   color: black;
-  background-color: #ffe7d6;
+  background-color: #EBB3BB;
 }
 
 #createSurvey {
@@ -47,22 +48,33 @@
 }
 
 #createSurveyButton {
-  background-color: #1c3128;
-  color: #ebb3bb;
+  background-color: #f7af3c;
+  color: #1d254f;
   margin: 2vw;
 }
 
 #createSurveyButton:hover {
-  color: #1c3128;
-  background-color: #ebb3bb;
+  color: #1d254f;
+  background-color: #EBB3BB;
 }
 
-/* 
-.adminPage {
-  width: 70vh;
-  height: 70vh;
+#deleteSurveyAlert {
+  text-align: center;
+  color: #EA4444;
+}
+
+#showPastResults {
+  background-color: #f7af3c;
+  color: #1d254f;
+  margin: 2vw;
+}
+
+#showPastResults:hover {
+  color: #1d254f;
+  background-color: #EBB3BB;
+}
+
+#pastResults {
   display: flex;
   justify-content: center;
-  background-color: #1D254F;
-  
-} */
+}

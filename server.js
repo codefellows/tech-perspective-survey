@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const { request } = require('http');
+const frameguard = require('frameguard')
 
 // ------------- CONFIG -------------------
 
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(methodOverride('_method'));
+app.use(frameguard({ action : 'SAMEORIGIN'}));
 
 const PORT = process.env.PORT;
 const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
@@ -238,8 +240,6 @@ function showResult(req, res) {
 function createSurvey(req, res) {
   let apiKey = req.cookies.jotform;
   let URL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${apiKey}`
-
-  console.log('TEMPLATE FORM', TEMPLATE_FORM);
 
   superagent.post(URL)
     .then( () => {

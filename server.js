@@ -29,7 +29,7 @@ const TEMPLATE_FORM = process.env.TEMPLATE_FORM;
 
 app.set('view engine', 'ejs');
 
-const HARDCODE_ID = process.env.HARDCODE_ID;
+
 
 
 // -------------- ROUTES ------------------
@@ -266,7 +266,8 @@ function showPastResults(req, res) {
 // ---- DO A SURVEY (this is the route associated with a link that is shared to users) ----
 
 function doSurvey(req, res) {
-  let id = HARDCODE_ID || req.params.id;
+  let id = req.params.id;
+  console.log('console logging id', id);
   res.render('pages/survey', { id : id });
 }
 

@@ -25,6 +25,7 @@
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "frameguard": "^3.1.0",
+    "helmet": "^4.2.0",
     "method-override": "^3.0.0",
     "node": "^15.0.1",
     "pg": "^8.4.2",

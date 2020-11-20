@@ -31,7 +31,6 @@ app.set('view engine', 'ejs');
 
 const HARDCODE_ID = process.env.HARDCODE_ID;
 
-
 // -------------- ROUTES ------------------
 
 app.get('/login', loginPage);

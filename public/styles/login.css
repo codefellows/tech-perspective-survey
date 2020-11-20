@@ -9,7 +9,7 @@
   height: 40vw;
   display: flex;
   justify-content: center;
-  border: solid 2vh #f7af3c;
+  border: solid 2vw #f7af3c;
   border-radius: 2vw;
   position: sticky;
   margin: 10vh auto;
@@ -23,7 +23,8 @@ div.login{
 input#loginInput {
   align-items: center;
   background-color: #FFE7D6;
-  Width: 30vw;
+  width: 30vw;
+  height: 2vw;
   text-align: center;
   border-radius: 2vw;
 }

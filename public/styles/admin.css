@@ -57,3 +57,24 @@
   color: #1d254f;
   background-color: #EBB3BB;
 }
+
+#deleteSurveyAlert {
+  text-align: center;
+  color: #EA4444;
+}
+
+#showPastResults {
+  background-color: #f7af3c;
+  color: #1d254f;
+  margin: 2vw;
+}
+
+#showPastResults:hover {
+  color: #1d254f;
+  background-color: #EBB3BB;
+}
+
+#pastResults {
+  display: flex;
+  justify-content: center;
+}

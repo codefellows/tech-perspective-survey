@@ -11,6 +11,7 @@ const superagent = require('superagent');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
+const { request } = require('http');
 
 // ------------- CONFIG -------------------
 
@@ -41,7 +42,7 @@ app.delete('/delete/:id', deleteSurvey);
 app.get('/result/:id', showResult);
 app.post('/survey/create', createSurvey);
 app.get('/survey/:id', doSurvey);
-app.get('/admin', showPastResults);
+app.post('/past_results', showPastResults);
 
 
 // -------------- CONSTRUCTORS ------------------
@@ -142,13 +143,14 @@ function saveDatabaseDeleteForm(req, res) {
         keys.forEach(key => {
           if(surveyArray[key].answer === 'TRUE') {
             counter ++;
+//create array of survey users displaying each users true answers
+//see graph function for inspo
           }
         })
         console.log('this is the counter', counter);
       }
     })
 
-    //only saving true answers to database not the rest of the information
     .then(() => {
       let URL = 'https://api.jotform.com/user/forms';
       superagent.get(URL)
@@ -226,7 +228,7 @@ function showResult(req, res) {
           surveyResults[people[i]]++;
 
       // pass those results through the page/graph ejs
-      
+
       res.render('pages/graph', { surveyResults : people });
     })
     .catch(err => console.error(err));
@@ -247,13 +249,19 @@ function createSurvey(req, res) {
     .catch(err => console.error(err));
 }
 
-//check routes in res.redirect, ejs and above
+
 function showPastResults(req, res) {
-  let SQL = `SELECT * FROM divtech;`;
-  client.query(SQL)
-    .then(() => {
-      res.redirect('/admin')
+  let SQL = `SELECT * FROM divtech WHERE username=$1;`;
+  let values = [req.body.user];
+  client.query(SQL, values)
+    .then(items => {
+      if( items.rows.length > 0) {
+        res.status(200).render('pages/past_results', {pastResults: items.rows});
+      } else {
+        res.redirect('/admin');
+      }
     })
+    .catch(err => console.error(err));
 }
 
 // ---- DO A SURVEY (this is the route associated with a link that is shared to users) ----

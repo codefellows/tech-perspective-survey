@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Past Results</title>
+  <%- include( '../layout/head' ) %>
+</head>
+<body>
+  <%- include( '../layout/header' ) %>
+  <h1>Past Survey Results</h1>
+  <ul>
+    <% pastResults.forEach(form => { %>
+      <li>
+        <h2><%= form.created_at.slice(0, -8) %></h2>
+        <a href="https://div-inc.herokuapp.com/survey/<%= form.survey_id %>">/survey/<%= form.survey_id %></a>
+        <h2> Submisions: <%= form.true_answer %></h2>
+    </li>
+    <% }) %>
+  </ul>
+  <form class="adminRout" method="get" action="/">
+    <button  type="submit">Admin Page</button>
+  </form>
+</body>
+</html>

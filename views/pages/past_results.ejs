@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Past Results</title>
   <%- include( '../layout/head' ) %>
 </head>
+
 <body>
   <%- include( '../layout/header' ) %>
   <h1>Past Survey Results</h1>
@@ -14,13 +16,19 @@
           <h2><%= form.created_at.slice(0, -8) %></h2>
           <a href="https://div-inc.herokuapp.com/survey/<%= form.survey_id %>">/survey/<%= form.survey_id %></a>
           <h2> Number Surveyed: <%= form.count %></h2>
-          <h2> Total True Answers: <%= form.true_answer %></h2>
+          <form id="deleteDatabase" method="post" action="/database/<%= form.survey_id %>?_method=DELETE">
+            <button id="deleteDatabaseButton" type="submit">Delete</button>
+          </form>
+          <form id="databaseResults" method="get" action="/result/<%= form.survey_id %>">
+            <button type="submit">Results</button>
+          </form>
         </li>
       <% }) %>
     </ul>
   </div>
-  <form class="adminRout" method="get" action="/">
-    <button  type="submit">Admin Page</button>
+  <form id="adminRoute" method="get" action="/">
+    <button id="returnToAdmin" type="submit">Admin Page</button>
   </form>
 </body>
+
 </html>

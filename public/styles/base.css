@@ -15,6 +15,10 @@ button {
   border-radius: 2vw;
   transition: 350ms;
   font-size: 2vw;
+  padding-right: 2vw;
+  padding-left: 2vw;
+  padding-top: .5vw;
+  padding-bottom: .5vw;
 }
 
 button:hover {

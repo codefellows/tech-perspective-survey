@@ -3,6 +3,9 @@ div#surveyHeader {
   font-size: 3vw;
   text-align: center;
   font-weight: bold;
+}
+
+#surveyHeader h1{
   margin-top: 5vw;
 }
 

@@ -39,3 +39,44 @@ h1 {
 form.adminRout {
   margin-left: 5.5vw;
 }
+
+#deleteDatabase button {
+  color: #1d254f;
+  background-color: #f7af3c;
+  padding-top: 0.25vw;
+  padding-left: 1.25vw;
+  padding-bottom: 0.25vw;
+  padding-right: 1.5vw;
+}
+
+#deleteDatabase button:hover {
+  color: black;
+  background-color: #EBB3BB;
+}
+
+#databaseResults button {
+  color: #1d254f;
+  background-color: #f7af3c;
+  padding-top: 0.25vw;
+  padding-left: 1.25vw;
+  padding-bottom: 0.25vw;
+  padding-right: 1.5vw;
+}
+
+#databaseResults button:hover {
+  color: black;
+  background-color: #EBB3BB;
+}
+
+#adminRoute button {
+  color: #1d254f;
+  background-color: #f7af3c;
+  margin-top: 2vw;
+  margin-left: 7.5vw;
+  margin-bottom: 2vw;
+}
+
+#adminRoute button:hover {
+  color: black;
+  background-color: #EBB3BB;
+}

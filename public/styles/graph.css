@@ -2,11 +2,16 @@
 height: 150vw;
 }
 
-/* .container {
+#graphbody {
   margin-top: 10vw;
-} */
+}
 
 .adminRout button {
   background-color: #f7af3c;
   margin: 2vw;
+}
+
+#adminRout button:hover {
+  color: black;
+  background-color: #EBB3BB;
 }

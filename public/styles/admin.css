@@ -35,6 +35,10 @@
 #surveyForms button {
   color: #1d254f;
   background-color: #f7af3c;
+  padding-top: 0.25vw;
+  padding-left: 1.25vw;
+  padding-bottom: 0.25vw;
+  padding-right: 1.5vw;
 }
 
 #surveyForms button:hover {

@@ -40,9 +40,12 @@ app.post('/login/session', loginSessionManual);
 app.get('/admin', adminPage);
 app.delete('/delete/:id', deleteSurvey);
 app.get('/result/:id', showResult);
+app.get('/database/:id', showDatabase);
 app.post('/survey/create', createSurvey);
 app.get('/survey/:id', doSurvey);
 app.post('/past_results', showPastResults);
+app.delete('/database/:id', deleteDatabase);
+app.get('/past_results', showPastResults);
 
 
 // -------------- CONSTRUCTORS ------------------
@@ -114,11 +117,9 @@ function adminPage(req, res) {
           let forms = result.body.content.filter(form => {
             if(form.status === 'ENABLED') {
               let theForm = new Form(null, form);
-              // console.log('!!!!!!!!!!!', theForm)
               return theForm;
             }
           })
-          // console.log(forms);
           res.render('pages/admin', {forms:forms, limit:limit});
         })
         .catch(err => console.error(err));
@@ -126,49 +127,50 @@ function adminPage(req, res) {
     .catch(err => console.error(err));
 }
 
+// ------- SAVES SURVEY TO DATABASE -------------------
 function saveDatabaseDeleteForm(req, res) {
   let apiKey = req.cookies.jotform;
   let id = req.params.id;
   let saveURL = `https://api.jotform.com/form/${id}/submissions?apiKey=${apiKey}`;
-  console.log('console logging URL ', saveURL)
   let counter = 0;
+  let surveyResultsString = '';
   superagent.get(saveURL)
     .then(result => {
-      console.log('before puppies', result.body);
-      let array = result.body.content;
-      console.log('puppies are cute', array);
-      for(let i = 0; i < array.length; i++) {
-        let surveyArray = array[i].answers
-        console.log('another string', surveyArray)
-        let keys = Object.keys(surveyArray);
-        keys.forEach(key => {
-          if(surveyArray[key].answer === 'TRUE') {
-            counter ++;
-//create array of survey users displaying each users true answers
-//see graph function for inspo
-          }
-        })
-        console.log('this is the counter', counter);
-      }
-    })
+      let submissions = result.body.content;
 
+      // create an array of each persons sum total of TRUE answers
+      let people = submissions.map( person => {
+        let keys = Object.keys(person.answers);
+        return keys.reduce((acc, key)=>{
+          // total = idx; //keep setting that total as the idx
+          return acc + (person.answers[key].answer === 'TRUE' ? 1 : 0);
+        }, 0);
+      });
+      // set up an empty array with a length of 'total', which we set earlier
+      let surveyResults = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+      // now lets loop through our 'people' array, and increment the corresponing surveyResults idx
+      console.log('console logging people', people);
+      for(let i=0; i<people.length; i++) {
+        surveyResults[people[i] -1]++;
+      }
+      surveyResultsString = surveyResults.join(',');
+    })
     .then(() => {
       let URL = 'https://api.jotform.com/user/forms';
       superagent.get(URL)
         .set('APIKEY', apiKey)
         .then(result => {
           let array = result.body.content;
-          console.log('Here is a string', counter);
           let form = '';
           array.forEach(index =>{
             if (index.id === id) {
               form = index;
             }
           });
-          console.log('console logging form', form);
           let theForm = new Form(counter, form);
           let SQL = `INSERT INTO divtech (username, survey_id, created_at, count, true_answer) VALUES ($1, $2, $3, $4, $5);`;
-          let values = [theForm.username, theForm.survey_id, theForm.created_at, theForm.count, theForm.true_answer];
+          let values = [theForm.username, theForm.survey_id, theForm.created_at, theForm.count, surveyResultsString];
           client.query(SQL, values)
             .then(results => {
               console.log('what is resuslts', results);
@@ -177,10 +179,13 @@ function saveDatabaseDeleteForm(req, res) {
     })
 }
 
+// ------------ DELETES SURVEY AND SAVES TO DATABASE -----------------
 function deleteSurvey(req, res) {
   let apiKey = req.cookies.jotform;
   let id = req.params.id;
   let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
+
+  //calls saveDatabaseDeleteForm function --- saves survey to database
   saveDatabaseDeleteForm(req,res);
   superagent.delete(deleteFormURL)
     .then(() => {
@@ -195,7 +200,6 @@ function deleteSurvey(req, res) {
 //if survey count result has more than one entry it does not increment.
 
 function showResult(req, res) {
-  console.log(req.params.id, 'lskdjflsdkfkdf');
   let id = req.params.id;
   let key = req.cookies.jotform;
   let URL = `https://api.jotform.com/form/${id}/submissions?apiKey=${key}`;
@@ -203,32 +207,49 @@ function showResult(req, res) {
   superagent.get(URL)
     .then(result => {
       let submissions = result.body.content;
-      console.log(result.body.content, 'lsdjfdklsfjlkslkdsjf')
 
-      // this is the total numbers of questions asked, we'll set that value in reduce below, so we can use it even later
-      let total = 0;
       // create an array of each persons sum total of TRUE answers
       let people = submissions.map( person => {
         let keys = Object.keys(person.answers);
-        return keys.reduce((acc, key, idx)=>{
-          // console.log(person.answers[key]);
-          total = idx; // keep setting that total as the idx
+        return keys.reduce((acc, key)=>{
+          // total = idx; //keep setting that total as the idx
           return acc + (person.answers[key].answer === 'TRUE' ? 1 : 0);
         }, 0);
       });
-      console.log('here is the people array', people);
       // set up an empty array with a length of 'total', which we set earlier
-      let surveyResults = [];
-      surveyResults.length = total;
+      let surveyResults = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       // now lets loop through our 'people' array, and increment the corresponing surveyResults idx
+      console.log('console logging people', people);
       for(let i=0; i<people.length; i++) {
-        if(!surveyResults[people[i]]) surveyResults[people[i]] = 1;
-        else surveyResults[people[i]]++;
+        surveyResults[people[i] -1]++;
       }
       // pass those results through the page/graph ejs
-      console.log(surveyResults);
-      res.render('pages/graph', { surveyResults });
+      res.render('pages/graph', { surveyResults : surveyResults });
+    })
+    .catch(err => console.error(err));
+}
+
+function showDatabase(req, res) {
+  let SQL = `SELECT true_answer FROM divtech WHERE survey_id=$1;`;
+  let values = [req.params.id];
+  console.log('===========================================', values[0]);
+  client.query(SQL, values)
+    .then(results => {
+      console.log('++++++++++++++++++++++++++++++++++++++++++++console logging results.body.content', results.rows)
+      res.render('pages/graph', { surveyResults : results.rows[0] });
+    })
+    .catch(err => console.error(err));
+}
+
+function deleteDatabase(req, res) {
+  let SQL = `DELETE FROM divtech WHERE survey_id=$1;`;
+  let values = [req.params.id];
+
+  client.query(SQL, values)
+    .then(() => {
+      //past_results endpoint is expecting to have the username and it is not getting it right now.
+      res.redirect('/past_results');
     })
     .catch(err => console.error(err));
 }
@@ -246,7 +267,7 @@ function createSurvey(req, res) {
     .catch(err => console.error(err));
 }
 
-
+// --------- SHOWS PAST RESULTS SAVED IN DATABASE ---------------
 function showPastResults(req, res) {
   let SQL = `SELECT * FROM divtech WHERE username=$1;`;
   let values = [req.body.user];
@@ -265,8 +286,8 @@ function showPastResults(req, res) {
 
 function doSurvey(req, res) {
   let id = req.params.id;
-  console.log('console logging id', id);
   res.render('pages/survey', { id : id });
+  console.log(req.params.id);
 }
 
 

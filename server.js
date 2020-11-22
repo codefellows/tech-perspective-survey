@@ -142,15 +142,13 @@ function saveDatabaseDeleteForm(req, res) {
       let people = submissions.map( person => {
         let keys = Object.keys(person.answers);
         return keys.reduce((acc, key)=>{
-          // total = idx; //keep setting that total as the idx
           return acc + (person.answers[key].answer === 'TRUE' ? 1 : 0);
         }, 0);
       });
-      // set up an empty array with a length of 'total', which we set earlier
+
       let surveyResults = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-      // now lets loop through our 'people' array, and increment the corresponing surveyResults idx
-      console.log('console logging people', people);
+      // now lets loop through our 'people' array, and increment the corresponing surveyResults
       for(let i=0; i<people.length; i++) {
         surveyResults[people[i] -1]++;
       }
@@ -185,7 +183,7 @@ function deleteSurvey(req, res) {
   let id = req.params.id;
   let deleteFormURL = `https://api.jotform.com/form/${id}?apiKey=${apiKey}`;
 
-  //calls saveDatabaseDeleteForm function --- saves survey to database
+  //----------DELETES FORM SAVES TO DATABASE--------------
   saveDatabaseDeleteForm(req,res);
   superagent.delete(deleteFormURL)
     .then(() => {
@@ -196,13 +194,11 @@ function deleteSurvey(req, res) {
 
 // ------------ SHOW THE GRAPH OF A SURVEY ----------------------
 
-//increments new surveys that do not have previous results ---- increments anything else that only has a single entry
-//if survey count result has more than one entry it does not increment.
-
 function showResult(req, res) {
   let id = req.params.id;
   let key = req.cookies.jotform;
   let URL = `https://api.jotform.com/form/${id}/submissions?apiKey=${key}`;
+
   // Collect all the submissions for a given form
   superagent.get(URL)
     .then(result => {
@@ -212,15 +208,13 @@ function showResult(req, res) {
       let people = submissions.map( person => {
         let keys = Object.keys(person.answers);
         return keys.reduce((acc, key)=>{
-          // total = idx; //keep setting that total as the idx
           return acc + (person.answers[key].answer === 'TRUE' ? 1 : 0);
         }, 0);
       });
-      // set up an empty array with a length of 'total', which we set earlier
+
       let surveyResults = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-      // now lets loop through our 'people' array, and increment the corresponing surveyResults idx
-      console.log('console logging people', people);
+      // now lets loop through our 'people' array, and increment the corresponing surveyResults
       for(let i=0; i<people.length; i++) {
         surveyResults[people[i] -1]++;
       }
@@ -230,32 +224,31 @@ function showResult(req, res) {
     .catch(err => console.error(err));
 }
 
+//--------------------SHOW PAST SURVEY RESULTS--------------------
 function showDatabase(req, res) {
   let SQL = `SELECT true_answer FROM divtech WHERE survey_id=$1;`;
   let values = [req.params.id];
-  console.log('===========================================', values[0]);
+
   client.query(SQL, values)
     .then(results => {
-      console.log('++++++++++++++++++++++++++++++++++++++++++++console logging results.body.content', results.rows)
       res.render('pages/graph', { surveyResults : results.rows[0] });
     })
     .catch(err => console.error(err));
 }
 
+//------------DELETE SURVEY FROM DATABASE------------------------
 function deleteDatabase(req, res) {
   let SQL = `DELETE FROM divtech WHERE survey_id=$1;`;
   let values = [req.params.id];
 
   client.query(SQL, values)
     .then(() => {
-      //past_results endpoint is expecting to have the username and it is not getting it right now.
       res.redirect('/past_results');
     })
     .catch(err => console.error(err));
 }
 
 // ------------ CLONE A NEW SURVEY ------------------------------
-
 function createSurvey(req, res) {
   let apiKey = req.cookies.jotform;
   let URL = `https://api.jotform.com/form/${TEMPLATE_FORM}/clone?apiKey=${apiKey}`
@@ -267,10 +260,11 @@ function createSurvey(req, res) {
     .catch(err => console.error(err));
 }
 
-// --------- SHOWS PAST RESULTS SAVED IN DATABASE ---------------
+// --------- SHOW LIST OF SURVEYS SAVED IN DATABASE ---------------
 function showPastResults(req, res) {
   let SQL = `SELECT * FROM divtech WHERE username=$1;`;
   let values = [req.body.user];
+
   client.query(SQL, values)
     .then(items => {
       if( items.rows.length > 0) {

@@ -1,0 +1,80 @@
+<script>
+  let ctx = document.getElementById('myChart').getContext('2d');
+  let labels = [1, 2, 3, 4,  5,  6,  7,  8,  9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21];
+  let resultsArrayString = '<%= surveyResults %>';
+  let resultsArray = resultsArrayString.split(',');
+ 
+  for(let i=0; i < resultsArray.length; i++) {
+    resultsArrayString[i] = parseInt(resultsArrayString[i]);
+  }
+
+  let backgroundColors = [];
+  for(let i = 0; i<resultsArray.length; i++)
+    backgroundColors.push("rgba(204, 53, 36, 1)");
+  
+  let questionaireChart = new Chart(myChart, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '# of people who scored this value',
+        data: resultsArray,
+        backgroundColor: backgroundColors,
+        borderColor: '#777',
+        borderWidth: 3,
+        hoverBorderWidth: 3,
+        hoverBorderColor: '#000'
+      }]
+    },
+    options: {
+      title: {
+        display: false,
+        text: 'Data',
+        fontSize: 25
+      },
+      legend: {
+        display: false,
+        position: 'right',
+        labels: {
+          fontColor: '#000'
+        }
+      },
+      layout: {
+        padding: {
+          left: 50,
+          right: 50,
+          bottom: 0,
+          top: 0
+        }
+      },
+      scales: {
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: '# of People',
+            fontSize: 20,
+            padding: 20,
+            fontColor: '#000',
+            fontFamily: 'Helvetica',
+          },
+          ticks: {
+              min: 0,
+              stepSize: 1
+            }
+        }],
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Number of Questions Answered "TRUE"',
+            fontSize: 20,
+            padding: 20,
+            fontColor: '#000',
+            fontFamily: 'Helvetica'
+          }
+        }]
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    }
+  });
+</script>

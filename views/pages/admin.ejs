@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Technology Survey Historical Results</title>
+  <%- include( '../layout/head.ejs' ) %>
+</head>
+
+<body>
+  <%- include( '../layout/header.ejs' ) %>
+  <div class="adminPage">
+    <section id="apiLimit">
+      <%- include( '../partials/limit.ejs'), { limit : limit } %>
+    </section>
+    <% if (forms.length < 5){ %>
+      <div id="createSurvey">
+        <%- include( '../partials/createsurvey' ) %>
+      </div>
+    <% } %>
+    <% if (forms.length > 4){ %>
+      <div id="deleteSurveyAlert">Jotform allows a total of 5 survey forms per API, delete a survey to create new survey form. </div>
+    <% } %>
+    <div id="surveyForms">
+      <%- include( '../partials/forms_listing', { forms : forms } ) %>
+    </div>
+    <%- include( '../partials/show_past_results', { forms : forms }) %>
+  </div>
+</body>
+
+</html>

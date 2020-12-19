@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS divtech;
+DROP TABLE IF EXISTS admin;
+DROP TABLE IF EXISTS forms;
+DROP TABLE IF EXISTS people;
+
+CREATE TABLE divtech (
+id SERIAL PRIMARY KEY,
+username VARCHAR(255),
+survey_id VARCHAR(255),
+created_at VARCHAR(255),
+count VARCHAR(255),
+true_answer TEXT
+);
+
+

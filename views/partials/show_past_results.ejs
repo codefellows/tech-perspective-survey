@@ -1,4 +1,4 @@
 <form id="pastResults" method="post" action="/past_results">
-  <input type='hidden' name='user' value='<%= forms[0].username %>'>
+  <input type='hidden' name='user' value='<%= forms && forms[0].username %>'>
   <button id="showPastResults" type="submit">Show Past Results</button>
 </form>
